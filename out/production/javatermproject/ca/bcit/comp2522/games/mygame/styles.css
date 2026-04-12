@@ -1,0 +1,153 @@
+/* ================================================================
+   Maze Race — JavaFX Stylesheet
+   Package: ca.bcit.comp2522.games.mygame
+   ================================================================ */
+
+/* ---------------------------------------------------------------
+   Root / Scene background
+   --------------------------------------------------------------- */
+.root {
+    -fx-background-color: #ffffff;
+    -fx-font-family: "Georgia";
+}
+
+/* ---------------------------------------------------------------
+   Buttons — override Modena defaults completely
+   --------------------------------------------------------------- */
+.button {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+    -fx-font-family: "Georgia";
+}
+
+.button-primary {
+    -fx-background-color: #2d5a27;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-border-width: 0;
+}
+
+.button-primary:hover {
+    -fx-background-color: #4a7c59;
+    -fx-text-fill: #ffffff;
+}
+
+.button-primary:pressed {
+    -fx-background-color: #1e3d1b;
+}
+
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2d5a27;
+    -fx-font-size: 13px;
+    -fx-border-color: #2d5a27;
+    -fx-border-width: 2px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #eaf5e4;
+}
+
+.button-secondary:pressed {
+    -fx-background-color: #c8dfc8;
+}
+
+/* ---------------------------------------------------------------
+   Maze grid cells
+   --------------------------------------------------------------- */
+.cell-hidden {
+    -fx-background-color: #d8e8d0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+
+.cell-visited-light {
+    -fx-background-color: #7ec850;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+
+.cell-visited-dark {
+    -fx-background-color: #5a9e32;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+
+.cell-player {
+    -fx-background-color: #b8dba0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+
+.cell-exit {
+    -fx-background-color: #2d5a27;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+
+/* ---------------------------------------------------------------
+   Text inputs
+   --------------------------------------------------------------- */
+.seed-field {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8dfc8;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6 10 6 10;
+}
+
+.seed-field:focused {
+    -fx-border-color: #2d5a27;
+}
+
+/* ---------------------------------------------------------------
+   Notifier label
+   --------------------------------------------------------------- */
+.notifier-label {
+    -fx-background-color: #eaf5e4;
+    -fx-border-color: #4a7c59;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 4 14 4 14;
+    -fx-font-size: 12px;
+    -fx-text-fill: #4a7c59;
+}
+
+/* ---------------------------------------------------------------
+   Rule rows on title screen
+   --------------------------------------------------------------- */
+.rule-row {
+    -fx-background-color: #f4faf4;
+    -fx-border-color: #c8dfc8;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+/* ---------------------------------------------------------------
+   End game dialog box
+   --------------------------------------------------------------- */
+.dialog-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8dfc8;
+    -fx-border-width: 2px;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+}
+
+/* ---------------------------------------------------------------
+   Overlay background (semi-transparent)
+   --------------------------------------------------------------- */
+.overlay-background {
+    -fx-background-color: rgba(0, 0, 0, 0.50);
+}

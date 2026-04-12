@@ -1,0 +1,25 @@
+
+Date and Time: 2026-04-10 19:40:30
+Games Played: 1
+Correct First Attempts: 3
+Correct Second Attempts: 1
+Incorrect Attempts: 6
+Total Score: 7 points
+Date and Time: 2026-04-11 13:44:39
+Games Played: 1
+Correct First Attempts: 1
+Correct Second Attempts: 0
+Incorrect Attempts: 9
+Score: 2 points
+Date and Time: 2026-04-11 14:00:43
+Games Played: 3
+Correct First Attempts: 2
+Correct Second Attempts: 2
+Incorrect Attempts: 26
+Score: 6 points
+Date and Time: 2026-04-11 17:49:14
+Games Played: 1
+Correct First Attempts: 2
+Correct Second Attempts: 0
+Incorrect Attempts: 8
+Score: 4 points
