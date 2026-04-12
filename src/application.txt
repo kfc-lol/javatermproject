@@ -1,0 +1,20 @@
+lesson 1:   Initializers        -   Cell in Maze
+            Overloading         -   MazeFactory createRandom() creates random seed and goes to createFromSeed()
+lesson 2:   Inheritance         -   BFSSolver extends MazeSolver
+            Exceptions          -   InvalidMoveException, MazeFileException, MazeGenerationException
+lesson 3:   Overriding          -   Point equals(), etc.
+            Substitution        -   MazeSolver in MazeUI assigned BFSSolver instance
+lesson 4:   Abstract classes    -   MazeSolver
+            Abstract methods    -   step() in MazeSolver
+lesson 5:   Collections         -   List, Set, Map etc. in BFSSolver
+            Iterators           -   MazeIterator in Maze
+lesson 6:   Lambda expressions  -   frontier.sort() in BFSSolver
+            Method references   -   Platform.startup(NumberGameLauncher::openWindow); NumberGameLauncher
+            Nested classes      -   Cell class in Maze
+lesson 8:   Scanner Seed        -   Maze
+            File                -   MazeFileManager
+            Streams             -   parseSeedFromLines() in MazeFileManager
+lesson 9:   GUI                 -   MazeUI
+lesson 10:  Unit Testing        -   in test folder
+lesson 11:  Design Pattern      -   MazeFactory
+lesson 12:  GUI Concurrency     -   Task<Void> bfsTask with Platform.runLater() in MazeUI
