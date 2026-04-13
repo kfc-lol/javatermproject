@@ -5,7 +5,7 @@ package ca.bcit.comp2522.games.mygame;
  * This is an unchecked exception since it indicates a programming error —
  * callers should validate direction input before attempting a move rather
  * than catching this exception in normal control flow.
- *
+ * <p>
  * Examples of invalid moves include a null direction or a direction that
  * somehow bypasses the key handler validation.
  *
@@ -30,7 +30,7 @@ public final class InvalidMoveException extends RuntimeException
      * @param message a description of why the move was invalid
      * @param cause   the underlying exception that triggered this one
      */
-    public InvalidMoveException(final String    message,
+    public InvalidMoveException(final String message,
                                 final Throwable cause)
     {
         super(message, cause);

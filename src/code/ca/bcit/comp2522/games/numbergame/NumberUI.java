@@ -1,13 +1,9 @@
 package ca.bcit.comp2522.games.numbergame;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.animation.*;
 import javafx.util.Duration;
@@ -18,30 +14,146 @@ import javafx.util.Duration;
  * Provides scene switching and state management.
  *
  * @author Kian Castro
- * @version 1.o
+ * @version 1.0
  */
-public class NumberUI {
+public class NumberUI
+{
+
+    private static final int COLUMNS = 5;
+    private static final int ROWS = 4;
 
     // ---------------------------------------------------------------
-    //  Color Palette (Black & White Theme)
+    //  Stylesheet
     // ---------------------------------------------------------------
-    private static final String BG_DARK      = "#000000";   // Black background
-    private static final String BG_PANEL     = "#1a1a1a";   // Dark gray panels
-    private static final String TEXT_PRIMARY = "#ffffff";   // White text
-    private static final String TEXT_MUTED   = "#cccccc";   // Light gray text
-    private static final String BORDER_COLOR = "#333333";   // Dark gray borders
-    private static final String ACCENT_RED   = "#ffffff";   // White (for accents)
+    private static final String CSS_PATH = "/ca/bcit/comp2522/games/numbergame/numbergame.css";
 
     // ---------------------------------------------------------------
-    //  Font Constants
+    //  Scene dimensions
     // ---------------------------------------------------------------
-    private static final String FONT_FAMILY = "Courier New";
-    private static final int FONT_SIZE_TITLE = 52;
-    private static final int FONT_SIZE_SUBTITLE = 22;
-    private static final int FONT_SIZE_BODY = 14;
-    private static final int FONT_SIZE_SMALL = 12;
+    private static final int SCENE_MENU_WIDTH  = 680;
+    private static final int SCENE_MENU_HEIGHT = 620;
+    private static final int SCENE_GAME_WIDTH  = 680;
+    private static final int SCENE_GAME_HEIGHT = 580;
 
-    private final Stage stage;
+    // ---------------------------------------------------------------
+    //  Grid structure
+    // ---------------------------------------------------------------
+    private static final int GRID_COLS      = 5;
+    private static final int GRID_GAP       = 8;
+    private static final int GRID_CELL_COUNT = Game.getGridSize();
+
+    // ---------------------------------------------------------------
+    //  Cell button dimensions
+    // ---------------------------------------------------------------
+    private static final int CELL_BTN_WIDTH  = 106;
+    private static final int CELL_BTN_HEIGHT = 72;
+
+    // ---------------------------------------------------------------
+    //  Cell position label offsets
+    // ---------------------------------------------------------------
+    private static final int POS_LABEL_OFFSET_X = 6;
+    private static final int POS_LABEL_OFFSET_Y = 4;
+
+    // ---------------------------------------------------------------
+    //  Animation durations (milliseconds)
+    // ---------------------------------------------------------------
+    private static final int ANIM_FADE_IN_MS   = 350;
+    private static final int ANIM_FLASH_MS     = 120;
+    private static final int ANIM_FLASH_SCALE  = 2;
+    private static final int ANIM_SLIDE_MS     = 320;
+    private static final int LOSS_DELAY_MS     = 1200;
+
+    // ---------------------------------------------------------------
+    //  Flash scale factor
+    // ---------------------------------------------------------------
+    private static final double FLASH_SCALE_FACTOR = 1.12;
+
+    // ---------------------------------------------------------------
+    //  End-panel expand height
+    // ---------------------------------------------------------------
+    private static final int END_PANEL_HEIGHT = 160;
+
+    // ---------------------------------------------------------------
+    //  Animation start/end values
+    // ---------------------------------------------------------------
+    private static final double ANIM_OPACITY_START = 0.0;
+    private static final double ANIM_OPACITY_END   = 1.0;
+    private static final double ANIM_SCALE_START   = 1.0;
+    private static final double ANIM_SLIDE_START   = 0.0;
+
+    // ---------------------------------------------------------------
+    //  Sentinel / offset values
+    // ---------------------------------------------------------------
+    private static final int NO_ATTEMPTED_NUMBER  = -1;
+    private static final int NEXT_ROUND_OFFSET    = 1;
+    private static final int CELL_DISPLAY_OFFSET  = 1;
+
+    // ---------------------------------------------------------------
+    //  UI text literals
+    // ---------------------------------------------------------------
+    private static final String TEXT_GAME_TITLE      = "NUMBER GAME";
+    private static final String TEXT_MENU_SUBTITLE   = ROWS + " × " + COLUMNS + "  •  " + GRID_CELL_COUNT + " NUMBERS  •  ASCENDING ORDER";
+    private static final String TEXT_HOW_TO_PLAY     = "How to play";
+    private static final String MIN_RANDOM_NUM       = "1";
+    private static final String MAX_RANDOM_NUM       = "1000";
+
+    private static final String TEXT_HOW_TO_BODY =
+        "The game reveals one random number (" + MIN_RANDOM_NUM + "–" + MAX_RANDOM_NUM + ") at a time.\n"
+        + "Click any empty cell to place it.\n"
+        + "All 20 numbers must end up in ascending order left-to-right.\n"
+        + "A bad placement ends the round immediately!";
+    private static final String TEXT_SESSION_SCORE   = "Session Score";
+    private static final String TEXT_PLAY_BTN        = "PLAY";
+    private static final String TEXT_CUE             = "PLACE THIS NUMBER";
+    private static final String TEXT_HINT_DEFAULT    = "Click any empty cell to place the number above.";
+    private static final String TEXT_TRY_AGAIN       = "TRY AGAIN";
+    private static final String TEXT_QUIT            = "QUIT";
+    private static final String TEXT_WIN_HEADLINE    = "YOU WIN!";
+    private static final String TEXT_LOSS_HEADLINE   = "GAME OVER";
+    private static final String TEXT_WIN_REASON      = "All numbers placed in perfect ascending order!";
+    private static final String TEXT_ROUND_ONE       = "Round 1";
+
+    // ---------------------------------------------------------------
+    //  CSS style-class names
+    // ---------------------------------------------------------------
+    private static final String CSS_MENU_ROOT        = "menu-root";
+    private static final String CSS_MENU_TITLE       = "menu-title";
+    private static final String CSS_MENU_SUBTITLE    = "menu-subtitle";
+    private static final String CSS_HEADER           = "header";
+    private static final String CSS_HEADER_TITLE     = "header-title";
+    private static final String CSS_HEADER_ROUND     = "header-round";
+    private static final String CSS_CARD             = "card";
+    private static final String CSS_CARD_HEADING     = "card-heading";
+    private static final String CSS_CARD_BODY        = "card-body";
+    private static final String CSS_CARD_HIGHLIGHT   = "card-highlight";
+    private static final String CSS_CURRENT_PANEL    = "current-panel";
+    private static final String CSS_CUE_LABEL        = "cue-label";
+    private static final String CSS_CURRENT_NUMBER   = "current-number";
+    private static final String CSS_STATUS_BAR       = "status-bar";
+    private static final String CSS_PROGRESS         = "progress-label";
+    private static final String CSS_HINT             = "hint-label";
+    private static final String CSS_HINT_WARNING     = "hint-label-warning";
+    private static final String CSS_CELL_EMPTY       = "cell-empty";
+    private static final String CSS_CELL_FILLED      = "cell-filled";
+    private static final String CSS_POS_LABEL        = "cell-position-label";
+    private static final String CSS_BTN_PRIMARY      = "btn-primary";
+    private static final String CSS_BTN_SECONDARY    = "btn-secondary";
+    private static final String CSS_END_PANEL        = "end-panel";
+    private static final String CSS_END_HEADLINE     = "end-headline";
+    private static final String CSS_END_REASON       = "end-reason";
+    private static final String CSS_END_STATS        = "end-stats";
+
+    // ---------------------------------------------------------------
+    //  Scene-property keys
+    // ---------------------------------------------------------------
+    private static final String PROP_PROGRESS_LBL = "progressLbl";
+    private static final String PROP_HINT_LBL     = "hintLbl";
+    public static final int FIRST_SCENE = 0;
+
+    // ---------------------------------------------------------------
+    //  Fields
+    // ---------------------------------------------------------------
+    private final Stage       stage;
     private final NumberScore tracker;
     private Scene menuScene;
     private Scene gameScene;
@@ -49,11 +161,13 @@ public class NumberUI {
     /**
      * Construct a NumberUI with the given stage and score tracker.
      *
-     * @param stageParam the primary JavaFX stage
+     * @param stageParam   the primary JavaFX stage
      * @param trackerParam the shared score accumulator
      */
-    public NumberUI(Stage stageParam, NumberScore trackerParam) {
-        this.stage = stageParam;
+    public NumberUI(final Stage stageParam,
+                    final NumberScore trackerParam)
+    {
+        this.stage   = stageParam;
         this.tracker = trackerParam;
     }
 
@@ -63,7 +177,8 @@ public class NumberUI {
      * @param scoreSummary optional summary shown when returning from a game session;
      *                     pass null or empty string to omit
      */
-    public void showMenu(String scoreSummary) {
+    public void showMenu(final String scoreSummary)
+    {
         menuScene = createMenuScene(scoreSummary);
         stage.setScene(menuScene);
     }
@@ -71,478 +186,437 @@ public class NumberUI {
     /**
      * Show the game scene.
      */
-    public void showGame() {
+    public void showGame()
+    {
         gameScene = createGameScene();
         stage.setScene(gameScene);
     }
 
-    /**
-     * Create the main menu scene.
-     *
-     * @param scoreSummary optional summary text
-     * @return the menu Scene
-     */
-    private Scene createMenuScene(String scoreSummary) {
-        // ---- Root layout ------------------------------------------------
-        VBox root = new VBox(30);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(60));
-        root.setStyle("-fx-background-color: " + BG_DARK + ";");
+    // ---------------------------------------------------------------
+    //  Scene builders
+    // ---------------------------------------------------------------
 
-        // ---- Title ------------------------------------------------------
-        Label title = new Label("NUMBER GAME");
-        title.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, FONT_SIZE_TITLE));
-        title.setTextFill(Color.web(TEXT_PRIMARY));
+    private Scene createMenuScene(final String scoreSummary)
+    {
+        final VBox root;
+        final Label title;
+        final Label subtitle;
+        final VBox card;
+        final Button playBtn;
+        final Scene scene;
 
-        Label subtitle = new Label("4 × 5  •  20 NUMBERS  •  ASCENDING ORDER");
-        subtitle.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 14));
-        subtitle.setTextFill(Color.web(TEXT_MUTED));
-        subtitle.setStyle("-fx-letter-spacing: 3px;");
+        root = new VBox();
+        root.getStyleClass().add(CSS_MENU_ROOT);
 
-        // ---- Description card -------------------------------------------
-        VBox card = buildCard(
-            "How to play",
-            "The game reveals one random number (1–1000) at a time.\n"
-            + "Click any empty cell to place it.\n"
-            + "All 20 numbers must end up in ascending order left-to-right.\n"
-            + "A bad placement ends the round immediately!"
-        );
+        title = new Label(TEXT_GAME_TITLE);
+        title.getStyleClass().add(CSS_MENU_TITLE);
 
-        // ---- Score panel (shown on return from game) --------------------
-        VBox scorePanel = new VBox();
-        if (scoreSummary != null && !scoreSummary.isBlank()) {
-            scorePanel = buildCard("Session Score", scoreSummary);
-            scorePanel.setStyle(scorePanel.getStyle()
-                                + "-fx-border-color: " + TEXT_PRIMARY + ";");
-        }
+        subtitle = new Label(TEXT_MENU_SUBTITLE);
+        subtitle.getStyleClass().add(CSS_MENU_SUBTITLE);
 
-        // ---- Play button ------------------------------------------------
-        Button playBtn = buildPrimaryButton("▶  PLAY");
+        card = buildCard(TEXT_HOW_TO_PLAY, TEXT_HOW_TO_BODY);
+
+        playBtn = new Button(TEXT_PLAY_BTN);
+        playBtn.getStyleClass().add(CSS_BTN_PRIMARY);
         playBtn.setOnAction(e -> showGame());
 
-        // ---- Assemble ---------------------------------------------------
         root.getChildren().addAll(title, subtitle, card);
-        if (scoreSummary != null && !scoreSummary.isBlank()) {
+
+        if (scoreSummary != null && !scoreSummary.isBlank())
+        {
+            VBox scorePanel = buildCard(TEXT_SESSION_SCORE, scoreSummary);
+            scorePanel.getStyleClass().add(CSS_CARD_HIGHLIGHT);
             root.getChildren().add(scorePanel);
         }
+
         root.getChildren().add(playBtn);
 
-        return new Scene(root, 680, 620);
-    }
-
-    /**
-     * Create the game scene.
-     *
-     * @return the game Scene
-     */
-    private Scene createGameScene() {
-        NumberGame game = new NumberGame();
-        game.startGame();
-
-        // Create slots for each cell in the grid
-        Slot[] slots = new Slot[20];
-        for (int i = 0; i < 20; i++) {
-            slots[i] = new Slot();
-        }
-
-        // Mutable scene reference used by inner helpers
-        Scene[] sceneHolder = new Scene[1];
-
-        // ---- Header bar ------------------------------------------------
-        Label titleLbl = new Label("NUMBER GAME");
-        titleLbl.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, FONT_SIZE_SUBTITLE));
-        titleLbl.setTextFill(Color.web(TEXT_PRIMARY));
-
-        Label roundLbl = new Label(roundLabel(tracker));
-        roundLbl.setFont(Font.font(FONT_FAMILY, 13));
-        roundLbl.setTextFill(Color.web(TEXT_MUTED));
-
-        HBox header = new HBox(titleLbl, createHorizontalSpacer(), roundLbl);
-        header.setPadding(new Insets(16, 24, 12, 24));
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setStyle("-fx-border-color: transparent transparent " + BORDER_COLOR + " transparent;");
-
-        // ---- Current-number display ------------------------------------
-        Label cueLabel = new Label("PLACE THIS NUMBER");
-        cueLabel.setFont(Font.font(FONT_FAMILY, 12));
-        cueLabel.setTextFill(Color.web(TEXT_MUTED));
-
-        Label currentNumLbl = new Label(String.valueOf(game.getCurrentNumber()));
-        currentNumLbl.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 64));
-        currentNumLbl.setTextFill(Color.web(TEXT_PRIMARY));
-
-        VBox currentPanel = new VBox(4, cueLabel, currentNumLbl);
-        currentPanel.setAlignment(Pos.CENTER);
-        currentPanel.setPadding(new Insets(18, 0, 14, 0));
-
-        // ---- 4 × 5 button grid -----------------------------------------
-        Button[] cells = new Button[20];
-        GridPane grid = new GridPane();
-        grid.setHgap(8);
-        grid.setVgap(8);
-        grid.setAlignment(Pos.CENTER);
-        grid.setPadding(new Insets(8, 24, 8, 24));
-
-        final int COLS = 5;
-        for (int i = 0; i < 20; i++) {
-            final int idx = i;
-            Button btn = buildCellButton("", false);
-            btn.setPrefSize(106, 72);
-
-            // Position label (1-20) in small text inside the button
-            Label posLbl = new Label(String.valueOf(i + 1));
-            posLbl.setFont(Font.font(FONT_FAMILY, 9));
-            posLbl.setTextFill(Color.web("#444c56"));
-
-            StackPane cell = new StackPane(btn, posLbl);
-            StackPane.setAlignment(posLbl, Pos.TOP_LEFT);
-            posLbl.setTranslateX(6);
-            posLbl.setTranslateY(4);
-
-            btn.setOnAction(e -> handleCellClick(
-                idx, game, tracker, cells, slots, currentNumLbl,
-                roundLbl, sceneHolder));
-
-            cells[i] = btn;
-            grid.add(cell, i % COLS, i / COLS);
-        }
-
-        // ---- Status bar ------------------------------------------------
-        Label progressLbl = new Label(progressText(game));
-        progressLbl.setFont(Font.font(FONT_FAMILY, 13));
-        progressLbl.setTextFill(Color.web(TEXT_MUTED));
-
-        Label hintLbl = new Label("Click any empty cell to place the number above.");
-        hintLbl.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 12));
-        hintLbl.setTextFill(Color.web(TEXT_PRIMARY));
-
-        VBox status = new VBox(4, progressLbl, hintLbl);
-        status.setAlignment(Pos.CENTER);
-        status.setPadding(new Insets(10, 24, 20, 24));
-
-        // ---- Root layout -----------------------------------------------
-        VBox root = new VBox(header, currentPanel, grid, status);
-        root.setStyle("-fx-background-color: " + BG_DARK + ";");
-
-        Scene scene = new Scene(root, 680, 580);
-        sceneHolder[0] = scene;
-
-        // Attach live references so the click handler can mutate them
-        scene.getProperties().put("progressLbl", progressLbl);
-        scene.getProperties().put("hintLbl", hintLbl);
+        scene = new Scene(root, SCENE_MENU_WIDTH, SCENE_MENU_HEIGHT);
+        scene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
 
         return scene;
     }
 
-    /**
-     * Handle a cell click in the game grid.
-     */
+    private Scene createGameScene()
+    {
+        // ---------------------------------------------------------------
+        //  Declarations
+        // ---------------------------------------------------------------
+        final NumberGame game;
+
+        final Slot[]  slots;
+        final Scene[] sceneHolder;
+
+        final Label titleLbl;
+        final Label roundLbl;
+        final HBox  header;
+
+        final Label cueLabel;
+        final Label currentNumLbl;
+        final VBox  currentPanel;
+
+        final Button[] cells;
+        final GridPane grid;
+
+        final Label progressLbl;
+        final Label hintLbl;
+        final VBox  status;
+
+        final VBox root;
+        final Scene scene;
+
+        // ---------------------------------------------------------------
+        //  Initialization
+        // ---------------------------------------------------------------
+        game = new NumberGame();
+        game.startGame();
+
+        slots = new Slot[GRID_CELL_COUNT];
+        sceneHolder = new Scene[1];
+
+        for (int i = 0; i < GRID_CELL_COUNT; i++)
+        {
+            slots[i] = new Slot();
+        }
+
+        // ---- Header bar ------------------------------------------------
+        titleLbl = new Label(TEXT_GAME_TITLE);
+        titleLbl.getStyleClass().add(CSS_HEADER_TITLE);
+
+        roundLbl = new Label(roundLabel(tracker));
+        roundLbl.getStyleClass().add(CSS_HEADER_ROUND);
+
+        header = new HBox(titleLbl, createHorizontalSpacer(), roundLbl);
+        header.getStyleClass().add(CSS_HEADER);
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        // ---- Current-number display ------------------------------------
+        cueLabel = new Label(TEXT_CUE);
+        cueLabel.getStyleClass().add(CSS_CUE_LABEL);
+
+        currentNumLbl = new Label(String.valueOf(game.getCurrentNumber()));
+        currentNumLbl.getStyleClass().add(CSS_CURRENT_NUMBER);
+
+        currentPanel = new VBox(cueLabel, currentNumLbl);
+        currentPanel.getStyleClass().add(CSS_CURRENT_PANEL);
+
+        // ---- Grid ------------------------------------------------------
+        cells = new Button[GRID_CELL_COUNT];
+        grid  = new GridPane();
+
+        grid.setHgap(GRID_GAP);
+        grid.setVgap(GRID_GAP);
+        grid.setAlignment(Pos.CENTER);
+
+        for (int i = 0; i < GRID_CELL_COUNT; i++)
+        {
+            final int idx;
+            final Button btn;
+            final Label posLbl;
+            final StackPane cell;
+
+            idx = i;
+
+            btn = new Button();
+            btn.getStyleClass().add(CSS_CELL_EMPTY);
+            btn.setPrefSize(CELL_BTN_WIDTH, CELL_BTN_HEIGHT);
+
+            posLbl = new Label(String.valueOf(i + CELL_DISPLAY_OFFSET));
+            posLbl.getStyleClass().add(CSS_POS_LABEL);
+
+            cell = new StackPane(btn, posLbl);
+            StackPane.setAlignment(posLbl, Pos.TOP_LEFT);
+
+            posLbl.setTranslateX(POS_LABEL_OFFSET_X);
+            posLbl.setTranslateY(POS_LABEL_OFFSET_Y);
+
+            btn.setOnAction(e -> handleCellClick(
+                idx, game, tracker, cells, slots, currentNumLbl, roundLbl, sceneHolder));
+
+            cells[i] = btn;
+            grid.add(cell, i % GRID_COLS, i / GRID_COLS);
+        }
+
+        // ---- Status bar ------------------------------------------------
+        progressLbl = new Label(progressText(game));
+        progressLbl.getStyleClass().add(CSS_PROGRESS);
+
+        hintLbl = new Label(TEXT_HINT_DEFAULT);
+        hintLbl.getStyleClass().add(CSS_HINT);
+
+        status = new VBox(progressLbl, hintLbl);
+        status.getStyleClass().add(CSS_STATUS_BAR);
+
+        // ---- Root ------------------------------------------------------
+        root = new VBox(header, currentPanel, grid, status);
+
+        scene = new Scene(root, SCENE_GAME_WIDTH, SCENE_GAME_HEIGHT);
+        scene.getStylesheets().add(getClass().getResource(CSS_PATH).toExternalForm());
+
+        sceneHolder[FIRST_SCENE] = scene;
+
+        scene.getProperties().put(PROP_PROGRESS_LBL, progressLbl);
+        scene.getProperties().put(PROP_HINT_LBL, hintLbl);
+
+        return scene;
+    }
+
+    // ---------------------------------------------------------------
+    //  Click handler
+    // ---------------------------------------------------------------
+
     private void handleCellClick(
-        int idx,
-        NumberGame game,
-        NumberScore tracker,
-        Button[] cells,
-        Slot[] slots,
-        Label currentNumLbl,
-        Label roundLbl,
-        Scene[] sceneHolder) {
+        final int         idx,
+        final NumberGame  game,
+        final NumberScore tracker,
+        final Button[]    cells,
+        final Slot[]      slots,
+        final Label       currentNumLbl,
+        final Label       roundLbl,
+        final Scene[]     sceneHolder)
+    {
+        final Slot slot;
+        slot = slots[idx];
 
-        // Get the slot for this cell
-        Slot slot = slots[idx];
-
-        // Slot already occupied – silently ignore
-        if (slot.isOccupied()) return;
-
-        int numBeforePlacement = game.getCurrentNumber();
-        boolean accepted = game.placeNumber(idx);
-        // ---- Out-of-order placement – silently ignore, wait for valid placement ----
-        if (!accepted) {
+        if (slot.isOccupied())
+        {
             return;
         }
 
-        // ---- Retrieve labels stored in scene properties ----------------
-        Scene scene = sceneHolder[0];
-        Label progressLbl = (Label) scene.getProperties().get("progressLbl");
-        Label hintLbl = (Label) scene.getProperties().get("hintLbl");
+        final int numBeforePlacement;
+        final boolean accepted;
 
-        // ---- Successful placement -----------------------------------------------
-        // Place the value in the slot
+        numBeforePlacement = game.getCurrentNumber();
+        accepted = game.placeNumber(idx);
+
+        if (!accepted)
+        {
+            return;
+        }
+
+        final Scene scene ;
+        final Label progressLbl;
+        final Label hintLbl;
+
+        scene = sceneHolder[ FIRST_SCENE ];
+        progressLbl= (Label) scene.getProperties().get(PROP_PROGRESS_LBL);
+        hintLbl= (Label) scene.getProperties().get(PROP_HINT_LBL);
+
         slot.placeValue(numBeforePlacement);
-
-        updateCell(cells[idx], numBeforePlacement, false);
+        markCellFilled(cells[idx], numBeforePlacement);
         flashCell(cells[idx]);
 
-        // ---- Check if game just ended due to no valid placements ----
-        if (game.isGameOver() && !game.isWon()) {
-            // No valid slots remain for the next number
-            disableAllCells(cells);
-            tracker.recordLoss(game.getSuccessfulPlacements());
-            roundLbl.setText(roundLabel(tracker));
-            showEndDialog(game, tracker, game.getCurrentNumber());
-        } else if (game.isWon()) {
-            // All numbers placed successfully
+        if (game.isWon())
+        {
             disableAllCells(cells);
             tracker.recordWin(game.getSuccessfulPlacements());
             roundLbl.setText(roundLabel(tracker));
-            showEndDialog(game, tracker, -1);
-        } else {
-            // ---- Round still in progress --------------------------------
+            showEndPanel(game, tracker, NO_ATTEMPTED_NUMBER);
+
+        }
+        else if (game.isGameOver())
+        {
+            final int nextNumber;
+            nextNumber = game.getCurrentNumber();
+
+            currentNumLbl.setText(String.valueOf(nextNumber));
+            progressLbl.setText(progressText(game));
+            hintLbl.setText("No valid cell exists for " + nextNumber + "!");
+            hintLbl.getStyleClass().setAll(CSS_HINT_WARNING);
+
+            fadeIn(currentNumLbl);
+            disableAllCells(cells);
+
+            final PauseTransition pause;
+            pause = new PauseTransition(Duration.millis(LOSS_DELAY_MS));
+            pause.setOnFinished(e -> {
+                tracker.recordLoss(game.getSuccessfulPlacements());
+                roundLbl.setText(roundLabel(tracker));
+                showEndPanel(game, tracker, nextNumber);
+            });
+            pause.play();
+
+        }
+        else
+        {
             currentNumLbl.setText(String.valueOf(game.getCurrentNumber()));
             progressLbl.setText(progressText(game));
-            hintLbl.setText("Click any empty cell to place the number above.");
-
-            // Animate the new number dropping in
-            currentNumLbl.setOpacity(0);
-            FadeTransition ft = new FadeTransition(Duration.millis(350), currentNumLbl);
-            ft.setToValue(1.0);
-            ft.play();
+            hintLbl.setText(TEXT_HINT_DEFAULT);
+            hintLbl.getStyleClass().setAll(CSS_HINT);
+            fadeIn(currentNumLbl);
         }
     }
 
-    /**
-     * Show the end-of-round dialog.
-     * @param attemptedNumber the next number that has no valid slots (or -1 if won)
-     */
-    private void showEndDialog(NumberGame game, NumberScore tracker, int attemptedNumber) {
-        boolean won = game.isWon();
+    // ---------------------------------------------------------------
+    //  End panel
+    // ---------------------------------------------------------------
 
-        // ---- Overlay pane ----------------------------------------------
-        StackPane overlay = new StackPane();
-        overlay.setStyle("-fx-background-color: rgba(13,17,23,0.82);");
+    private void showEndPanel(final NumberGame  game,
+                              final NumberScore tracker,
+                              final int         attemptedNumber)
+    {
+        final boolean won;
 
-        // ---- Dialog card -----------------------------------------------
-        String headlineText = won ? "🎉  YOU WIN!" : "💀  GAME OVER";
-        Label headline = new Label(headlineText);
-        headline.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 36));
-        headline.setTextFill(Color.web(TEXT_PRIMARY));
+        final Label headline;
+        final String headlineText;
 
-        String reasonText;
-        if (won) {
-            reasonText = "All 20 numbers placed in perfect ascending order!";
-        } else {
-            // Only reached here if no valid slots remain for the next number
-            reasonText = "No valid slot remains for number " + attemptedNumber + ".\n"
-                       + "Cannot maintain ascending order with remaining empty cells.";
+        final String reasonText;
+        final Label reasonLbl;
+        final Label statsLbl;
+
+        final Button tryAgainBtn;
+        final Button quitBtn;
+
+        final HBox buttons;
+        final VBox panel;
+
+        final Scene scene;
+        final VBox newRoot;
+
+        final TranslateTransition slide;
+        final FadeTransition fade;
+        final ParallelTransition animation;
+
+        won = game.isWon();
+
+        if (won)
+        {
+            headlineText = TEXT_WIN_HEADLINE;
+        }
+        else
+        {
+            headlineText = TEXT_LOSS_HEADLINE;
         }
 
-        Label reasonLbl = new Label(reasonText);
-        reasonLbl.setFont(Font.font(FONT_FAMILY, 14));
-        reasonLbl.setTextFill(Color.web(TEXT_MUTED));
-        reasonLbl.setWrapText(true);
-        reasonLbl.setMaxWidth(400);
-        reasonLbl.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        headline = new Label(headlineText);
+        headline.getStyleClass().add(CSS_END_HEADLINE);
 
-        Label placementLbl = new Label(
-            "Placements this round: " + game.getSuccessfulPlacements() + " / 20");
-        placementLbl.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 15));
-        placementLbl.setTextFill(Color.web(TEXT_PRIMARY));
+        if (won)
+        {
+            reasonText = TEXT_WIN_REASON;
+        }
+        else
+        {
+            reasonText = "No valid slot for " + attemptedNumber
+                         + " — ascending order cannot be maintained.";
+        }
 
-        Separator sep = new Separator();
-        sep.setMaxWidth(380);
+        reasonLbl = new Label(reasonText);
+        reasonLbl.getStyleClass().add(CSS_END_REASON);
 
-        Label summaryLbl = new Label(tracker.getSummary());
-        summaryLbl.setFont(Font.font(FONT_FAMILY, 13));
-        summaryLbl.setTextFill(Color.web(TEXT_MUTED));
-        summaryLbl.setWrapText(true);
-        summaryLbl.setMaxWidth(400);
-        summaryLbl.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        statsLbl = new Label(
+            "Placed: " + game.getSuccessfulPlacements() + " / " + GRID_CELL_COUNT
+            + "   •   " + tracker.getSummary());
+        statsLbl.getStyleClass().add(CSS_END_STATS);
 
-        // ---- Buttons ---------------------------------------------------
-        Button tryAgainBtn = buildSecondaryButton("↺  TRY AGAIN", TEXT_PRIMARY);
+        tryAgainBtn = new Button(TEXT_TRY_AGAIN);
+        tryAgainBtn.getStyleClass().add(CSS_BTN_SECONDARY);
         tryAgainBtn.setOnAction(e -> showGame());
 
-        Button quitBtn = buildSecondaryButton("⬡  QUIT", ACCENT_RED);
+        quitBtn = new Button(TEXT_QUIT);
+        quitBtn.getStyleClass().add(CSS_BTN_SECONDARY);
         quitBtn.setOnAction(e -> showMenu(tracker.getSummary()));
 
-        HBox buttons = new HBox(20, tryAgainBtn, quitBtn);
-        buttons.setAlignment(Pos.CENTER);
+        buttons = new HBox(GRID_GAP, tryAgainBtn, quitBtn);
+        buttons.setAlignment(Pos.CENTER_LEFT);
 
-        VBox dialog = new VBox(16,
-                               headline, reasonLbl, placementLbl, sep, summaryLbl, buttons);
-        dialog.setAlignment(Pos.CENTER);
-        dialog.setPadding(new Insets(36, 40, 36, 40));
-        dialog.setMaxWidth(480);
-        dialog.setStyle(
-            "-fx-background-color: " + BG_PANEL + ";"
-            + "-fx-border-color: " + BORDER_COLOR + ";"
-            + "-fx-border-width: 2;"
-            + "-fx-border-radius: 12;"
-            + "-fx-background-radius: 12;");
+        panel = new VBox(headline, reasonLbl, statsLbl, buttons);
+        panel.getStyleClass().add(CSS_END_PANEL);
 
-        overlay.getChildren().add(dialog);
+        scene  = stage.getScene();
+        newRoot = new VBox(scene.getRoot(), panel);
+        scene.setRoot(newRoot);
 
-        // Animate the dialog in
-        dialog.setOpacity(0);
-        dialog.setScaleX(0.85);
-        dialog.setScaleY(0.85);
+        stage.setHeight(stage.getHeight() + END_PANEL_HEIGHT);
 
-        // Get the current scene and replace its root with an overlay wrapper
-        Scene scene = stage.getScene();
-        VBox existingRoot = (VBox) scene.getRoot();
-        StackPane wrapper = new StackPane(existingRoot, overlay);
-        scene.setRoot(wrapper);
+        panel.setTranslateY(END_PANEL_HEIGHT);
+        panel.setOpacity(ANIM_OPACITY_START);
 
-        FadeTransition fade = new FadeTransition(Duration.millis(280), dialog);
-        fade.setToValue(1.0);
-        ScaleTransition scale = new ScaleTransition(Duration.millis(280), dialog);
-        scale.setToX(1.0);
-        scale.setToY(1.0);
-        ParallelTransition pt = new ParallelTransition(fade, scale);
-        pt.play();
+        slide = new TranslateTransition(Duration.millis(ANIM_SLIDE_MS), panel);
+        slide.setToY(ANIM_SLIDE_START);
+
+        fade = new FadeTransition(Duration.millis(ANIM_SLIDE_MS), panel);
+        fade.setToValue(ANIM_OPACITY_END);
+
+        animation = new ParallelTransition(slide, fade);
+        animation.play();
     }
 
-    /**
-     * Flash animation for a cell button.
-     */
-    private void flashCell(Button btn) {
-        ScaleTransition st = new ScaleTransition(Duration.millis(120), btn);
-        st.setFromX(1.0);
-        st.setFromY(1.0);
-        st.setToX(1.12);
-        st.setToY(1.12);
+    // ---------------------------------------------------------------
+    //  UI helpers
+    // ---------------------------------------------------------------
+
+    private void fadeIn(final Label label)
+    {
+        label.setOpacity(ANIM_OPACITY_START);
+        final FadeTransition ft;
+        ft = new FadeTransition(Duration.millis(ANIM_FADE_IN_MS), label);
+        ft.setToValue(ANIM_OPACITY_END);
+        ft.play();
+    }
+
+    private void flashCell(final Button btn)
+    {
+        final ScaleTransition st;
+        st = new ScaleTransition(Duration.millis(ANIM_FLASH_MS), btn);
+        st.setFromX(ANIM_SCALE_START);
+        st.setFromY(ANIM_SCALE_START);
+        st.setToX(FLASH_SCALE_FACTOR);
+        st.setToY(FLASH_SCALE_FACTOR);
         st.setAutoReverse(true);
-        st.setCycleCount(2);
+        st.setCycleCount(ANIM_FLASH_SCALE);
         st.play();
     }
 
-    /**
-     * Disable all cell buttons.
-     */
-    private void disableAllCells(Button[] cells) {
-        for (Button c : cells) c.setDisable(true);
+    private void markCellFilled(final Button btn, final int num)
+    {
+        btn.setText(String.valueOf(num));
+        btn.getStyleClass().setAll(CSS_CELL_FILLED);
     }
 
-    /**
-     * Generate progress text.
-     */
-    private String progressText(NumberGame game) {
-        int placed = game.getSuccessfulPlacements();
-        return "Progress: " + placed + " / 20 placed";
+    private void disableAllCells(final Button[] cells)
+    {
+        for (final Button c : cells) c.setDisable(true);
     }
 
-    /**
-     * Generate round label.
-     */
-    private String roundLabel(NumberScore t) {
-        if (!t.hasGames()) return "Round 1";
-        return "Round " + (t.getTotalGames() + 1)
+    private String progressText(final NumberGame game)
+    {
+        return "Progress: " + game.getSuccessfulPlacements() + " / " + GRID_CELL_COUNT + " placed";
+    }
+
+    private String roundLabel(final NumberScore t)
+    {
+        if (!t.hasGames())
+        {
+            return TEXT_ROUND_ONE;
+        }
+        return "Round " + (t.getTotalGames() + NEXT_ROUND_OFFSET)
                + "  •  W: " + t.getWins() + "  L: " + t.getLosses();
     }
 
-    // ---------------------------------------------------------------
-    //  UI Helper Methods
-    // ---------------------------------------------------------------
+    private VBox buildCard(final String heading,
+                           final String body)
+    {
+        final Label h;
+        final Label b;
+        final VBox box;
 
-    /**
-     * Build a styled card with heading and body text.
-     */
-    private VBox buildCard(String heading, String body) {
-        Label h = new Label(heading.toUpperCase());
-        h.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 13));
-        h.setTextFill(Color.web(TEXT_PRIMARY));
+        h = new Label(heading.toUpperCase());
+        h.getStyleClass().add(CSS_CARD_HEADING);
 
-        Label b = new Label(body);
-        b.setFont(Font.font(FONT_FAMILY, FONT_SIZE_BODY));
-        b.setTextFill(Color.web(TEXT_PRIMARY));
-        b.setWrapText(true);
-        b.setMaxWidth(520);
-        b.setTextAlignment(javafx.scene.text.TextAlignment.LEFT);
+        b = new Label(body);
+        b.getStyleClass().add(CSS_CARD_BODY);
 
-        VBox box = new VBox(8, h, b);
-        box.setPadding(new Insets(18, 24, 18, 24));
-        box.setMaxWidth(560);
-        box.setStyle(
-            "-fx-background-color: " + BG_PANEL + ";"
-            + "-fx-border-color: "     + BORDER_COLOR + ";"
-            + "-fx-border-radius: 8;"
-            + "-fx-background-radius: 8;");
+        box = new VBox(h, b);
+        box.getStyleClass().add(CSS_CARD);
         return box;
     }
 
-    /**
-     * Build a primary action button (solid background).
-     */
-    private Button buildPrimaryButton(final String text) {
-        final Button btn = new Button(text);
-        btn.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 16));
-        btn.setTextFill(Color.web(BG_DARK));
-        btn.setPrefWidth(220);
-        btn.setPrefHeight(48);
-        String baseStyle =
-            "-fx-background-color: " + TEXT_PRIMARY + ";"
-            + "-fx-background-radius: 8;"
-            + "-fx-cursor: hand;";
-        btn.setStyle(baseStyle);
-        btn.setOnMouseEntered(e -> btn.setStyle(baseStyle));
-        btn.setOnMouseExited(e -> btn.setStyle(baseStyle));
-        return btn;
-    }
-
-    /**
-     * Build a secondary button (outline style).
-     */
-    private Button buildSecondaryButton(String text, String color) {
-        Button btn = new Button(text);
-        btn.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 15));
-        btn.setTextFill(Color.web(color));
-        btn.setPrefWidth(180);
-        btn.setPrefHeight(44);
-        String baseStyle =
-            "-fx-background-color: transparent;"
-            + "-fx-border-color: " + color + ";"
-            + "-fx-border-radius: 8;"
-            + "-fx-background-radius: 8;"
-            + "-fx-cursor: hand;";
-        btn.setStyle(baseStyle);
-        btn.setOnMouseEntered(e -> btn.setStyle(baseStyle));
-        btn.setOnMouseExited(e -> btn.setStyle(baseStyle));
-        return btn;
-    }
-
-    /**
-     * Build a grid cell button with styling.
-     */
-    private Button buildCellButton(String text, boolean filled) {
-        Button btn = new Button(text);
-        btn.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 22));
-        btn.setTextFill(Color.web(TEXT_PRIMARY));
-        applyCellStyle(btn, filled, false);
-        return btn;
-    }
-
-    /**
-     * Apply styling to a cell button based on its state.
-     */
-    private void applyCellStyle(Button btn, boolean filled, boolean invalid) {
-        String bg     = invalid ? "#3d1b1b"
-            : filled  ? "#1b2d4f"
-            :           "#1c2128";
-        String border = invalid ? ACCENT_RED
-            : filled  ? TEXT_PRIMARY
-            :           BORDER_COLOR;
-        btn.setStyle(
-            "-fx-background-color: " + bg + ";"
-            + "-fx-border-color: " + border + ";"
-            + "-fx-border-radius: 8;"
-            + "-fx-background-radius: 8;"
-            + (filled || invalid ? "" : "-fx-cursor: hand;"));
-    }
-
-    /**
-     * Update a cell button with text and styling.
-     */
-    private void updateCell(Button btn, int num, boolean invalid) {
-        btn.setText(String.valueOf(num));
-        applyCellStyle(btn, !invalid, invalid);
-        btn.setTextFill(Color.web(invalid ? TEXT_MUTED : TEXT_PRIMARY));
-    }
-
-    /**
-     * Create a horizontal spacer that grows to fill available space.
-     */
-    private Region createHorizontalSpacer() {
-        Region r = new Region();
-        HBox.setHgrow(r, Priority.ALWAYS);
-        return r;
+    private Region createHorizontalSpacer()
+    {
+        final Region region;
+        region = new Region();
+        HBox.setHgrow(region, Priority.ALWAYS);
+        return region;
     }
 }

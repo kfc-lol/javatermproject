@@ -30,15 +30,15 @@ import java.util.Objects;
  * Unified UI manager for the Maze Race game.
  * Handles the title scene (including rules) and the fully playable game scene.
  * All scene switching is performed internally via stage.setScene().
- *
+ * <p>
  * Styling is handled entirely through styles.css — no inline style strings
  * are applied to Button nodes, avoiding JavaFX Modena CSS conflicts.
- *
+ * <p>
  * GUI concurrency is achieved using JavaFX Task and Platform.runLater():
  * each player key press locks input, triggers a background Task that runs
  * one BFS step off the JavaFX Application Thread, then Platform.runLater()
  * updates the grid and unlocks input on the UI thread.
- *
+ * <p>
  * When one side finishes before the other, a Timeline drives the remaining
  * side until it also finishes, at which point the end overlay is shown.
  *
@@ -47,134 +47,129 @@ import java.util.Objects;
  */
 public final class MazeUI
 {
+    public static final  int        FIRST_INDEX             = 0;
+    public static final  int        CHECK_EVEN              = 0;
+    private static final int        RULE_TITLE_COL          = 0;
+    private static final int        RULE_DESC_COL           = 1;
+    private static final int        EVEN_GRASS_TILE         = 2;
     // ---------------------------------------------------------------
     //  Scene dimensions
     // ---------------------------------------------------------------
-    private static final int    SCENE_WIDTH_PX          = 660;
-    private static final int    SCENE_HEIGHT_PX         = 720;
-
+    private static final int        SCENE_WIDTH_PX          = 660;
+    private static final int        SCENE_HEIGHT_PX         = 720;
     // ---------------------------------------------------------------
     //  Font
     // ---------------------------------------------------------------
-    private static final String FONT_FAMILY             = "Georgia";
-    private static final int    FONT_SIZE_TITLE_PT      = 48;
-    private static final int    FONT_SIZE_SUBTITLE_PT   = 14;
-    private static final int    FONT_SIZE_HEADING_PT    = 18;
-    private static final int    FONT_SIZE_SUBHEADING_PT = 15;
-    private static final int    FONT_SIZE_RULE_PT       = 13;
-    private static final int    FONT_SIZE_BUTTON_PT     = 14;
-    private static final int    FONT_SIZE_NOTIFIER_PT   = 12;
-    private static final int    FONT_SIZE_PROGRESS_PT   = 13;
-    private static final int    FONT_SIZE_TICK_PT       = 13;
-    private static final int    FONT_SIZE_CELL_PT       = 16;
-    private static final int    FONT_SIZE_RESULT_PT     = 24;
-
+    private static final String     FONT_FAMILY             = "Georgia";
+    private static final int        FONT_SIZE_TITLE_PT      = 48;
+    private static final int        FONT_SIZE_SUBTITLE_PT   = 14;
+    private static final int        FONT_SIZE_HEADING_PT    = 18;
+    private static final int        FONT_SIZE_SUBHEADING_PT = 15;
+    private static final int        FONT_SIZE_RULE_PT       = 13;
+    private static final int        FONT_SIZE_BUTTON_PT     = 14;
+    private static final int        FONT_SIZE_NOTIFIER_PT   = 12;
+    private static final int        FONT_SIZE_PROGRESS_PT   = 13;
+    private static final int        FONT_SIZE_TICK_PT       = 13;
+    private static final int        FONT_SIZE_CELL_PT       = 16;
+    private static final int        FONT_SIZE_RESULT_PT     = 24;
     // ---------------------------------------------------------------
     //  Colours (text only — backgrounds handled by CSS)
     // ---------------------------------------------------------------
-    private static final String COLOR_FOREST_DARK       = "#2d5a27";
-    private static final String COLOR_TEXT_PRIMARY      = "#1a1a1a";
-    private static final String COLOR_TEXT_MUTED        = "#555555";
-    private static final String COLOR_PLAYER            = "#1a6bb5";
-    private static final String COLOR_BFS               = "#c0392b";
-    private static final String COLOR_EXIT_TEXT         = "#f1c40f";
-
+    private static final String     COLOR_FOREST_DARK       = "#2d5a27";
+    private static final String     COLOR_TEXT_PRIMARY      = "#1a1a1a";
+    private static final String     COLOR_TEXT_MUTED        = "#555555";
+    private static final String     COLOR_PLAYER            = "#1a6bb5";
+    private static final String     COLOR_BFS               = "#c0392b";
+    private static final String     COLOR_EXIT_TEXT         = "#f1c40f";
     // ---------------------------------------------------------------
     //  Layout
     // ---------------------------------------------------------------
-    private static final int    SPACING_LARGE_PX        = 24;
-    private static final int    SPACING_MEDIUM_PX       = 14;
-    private static final int    SPACING_SMALL_PX        = 8;
-    private static final int    PADDING_OUTER_PX        = 36;
-    private static final int    PADDING_RULE_H_PX       = 12;
-    private static final int    PADDING_RULE_V_PX       = 7;
-    private static final int    PADDING_DIALOG_PX       = 36;
-    private static final int    BUTTON_WIDTH_PX         = 180;
-    private static final int    BUTTON_HEIGHT_PX        = 42;
-    private static final int    SEED_FIELD_WIDTH_PX     = 260;
-    private static final int    DIALOG_MAX_WIDTH_PX     = 420;
-    private static final double RULE_KEYWORD_MIN_WIDTH  = 68.0;
-
+    private static final int        SPACING_LARGE_PX        = 24;
+    private static final int        SPACING_MEDIUM_PX       = 14;
+    private static final int        SPACING_SMALL_PX        = 8;
+    private static final int        PADDING_OUTER_PX        = 36;
+    private static final int        PADDING_RULE_H_PX       = 12;
+    private static final int        PADDING_RULE_V_PX       = 7;
+    private static final int        PADDING_DIALOG_PX       = 36;
+    private static final int        BUTTON_WIDTH_PX         = 180;
+    private static final int        BUTTON_HEIGHT_PX        = 42;
+    private static final int        SEED_FIELD_WIDTH_PX     = 260;
+    private static final int        DIALOG_MAX_WIDTH_PX     = 420;
+    private static final double     RULE_KEYWORD_MIN_WIDTH  = 68.0;
     // ---------------------------------------------------------------
     //  Maze grid
     // ---------------------------------------------------------------
-    private static final int    GRID_COLS               = 10;
-    private static final int    GRID_ROWS               = 10;
-    private static final int    CELL_SIZE_PX            = 46;
-    private static final int    GRID_GAP_PX             = 2;
-
+    private static final int        GRID_COLS               = 10;
+    private static final int        GRID_ROWS               = 10;
+    private static final int        CELL_SIZE_PX            = 46;
+    private static final int        GRID_GAP_PX             = 2;
     // ---------------------------------------------------------------
     //  Wall border
     // ---------------------------------------------------------------
-    private static final int    WALL_THICKNESS_PX       = 4;
-    private static final int    WALL_NONE_PX            = 0;
-    private static final String WALL_COLOR              = "#4a3728";
-
+    private static final int        WALL_THICKNESS_PX       = 4;
+    private static final int        WALL_NONE_PX            = 0;
+    private static final String     WALL_COLOR              = "#4a3728";
     // ---------------------------------------------------------------
     //  Animation
     // ---------------------------------------------------------------
-    private static final double NOTIFIER_FADE_MS        = 280.0;
-    private static final double NOTIFIER_VISIBLE        = 1.0;
-    private static final double NOTIFIER_HIDDEN         = 0.0;
-    private static final double OVERLAY_FADE_MS         = 220.0;
-    private static final double SOLO_BFS_INTERVAL_MS    = 120.0;
-
+    private static final double     NOTIFIER_FADE_MS        = 280.0;
+    private static final double     NOTIFIER_VISIBLE        = 1.0;
+    private static final double     NOTIFIER_HIDDEN         = 0.0;
+    private static final double     OVERLAY_FADE_MS         = 220.0;
+    private static final double     SOLO_BFS_INTERVAL_MS    = 120.0;
     // ---------------------------------------------------------------
     //  CSS stylesheet resource name
     // ---------------------------------------------------------------
-    private static final String STYLESHEET             = "styles.css";
-
+    private static final String     STYLESHEET              = "styles.css";
     // ---------------------------------------------------------------
     //  CSS class names
     // ---------------------------------------------------------------
-    private static final String CSS_BTN_PRIMARY        = "button-primary";
-    private static final String CSS_BTN_SECONDARY      = "button-secondary";
-    private static final String CSS_CELL_HIDDEN        = "cell-hidden";
-    private static final String CSS_CELL_VISITED_LIGHT = "cell-visited-light";
-    private static final String CSS_CELL_VISITED_DARK  = "cell-visited-dark";
-    private static final String CSS_CELL_PLAYER        = "cell-player";
-    private static final String CSS_CELL_EXIT          = "cell-exit";
-    private static final String CSS_NOTIFIER           = "notifier-label";
-    private static final String CSS_RULE_ROW           = "rule-row";
-    private static final String CSS_SEED_FIELD         = "seed-field";
-    private static final String CSS_DIALOG             = "dialog-box";
-    private static final String CSS_OVERLAY            = "overlay-background";
-
+    private static final String     CSS_BTN_PRIMARY         = "button-primary";
+    private static final String     CSS_BTN_SECONDARY       = "button-secondary";
+    private static final String     CSS_CELL_HIDDEN         = "cell-hidden";
+    private static final String     CSS_CELL_VISITED_LIGHT  = "cell-visited-light";
+    private static final String     CSS_CELL_VISITED_DARK   = "cell-visited-dark";
+    private static final String     CSS_CELL_PLAYER         = "cell-player";
+    private static final String     CSS_CELL_EXIT           = "cell-exit";
+    private static final String     CSS_NOTIFIER            = "notifier-label";
+    private static final String     CSS_RULE_ROW            = "rule-row";
+    private static final String     CSS_SEED_FIELD          = "seed-field";
+    private static final String     CSS_DIALOG              = "dialog-box";
+    private static final String     CSS_OVERLAY             = "overlay-background";
     // ---------------------------------------------------------------
     //  Rules content
     // ---------------------------------------------------------------
-    private static final String[][] RULES =
+    private static final String[][] RULES                   =
         {
-            { "Explore",  "The maze is hidden. You see only cells you have visited."          },
-            { "Move",     "Use W A S D or arrow keys. Each input counts as one tick."         },
-            { "Walls",    "Moving into a wall reveals it — but still costs you a tick."       },
-            { "Exit",     "You know where the exit is. You don't know the path."              },
-            { "BFS",      "BFS searches alongside you — one step per tick. It hits walls too."},
-            { "Progress", "Manhattan distance to the exit is shown for you and BFS."          },
-            { "Win",      "Fewest ticks to reach the exit wins. Ties are possible."           },
+            {"Explore", "The maze is hidden. You see only cells you have visited."},
+            {"Move", "Use W A S D or arrow keys. Each input counts as one tick."},
+            {"Walls", "Moving into a wall reveals it — but still costs you a tick."},
+            {"Exit", "You know where the exit is. You don't know the path."},
+            {"BFS", "BFS searches alongside you — one step per tick. It hits walls too."},
+            {"Progress", "Manhattan distance to the exit is shown for you and BFS."},
+            {"Win", "Fewest ticks to reach the exit wins. Ties are possible."},
             };
-
     // ---------------------------------------------------------------
     //  Instance fields — stage and score are set once at construction
     // ---------------------------------------------------------------
-    private final Stage     stage;
-    private final MazeScore score;
+    private final        Stage      stage;
+    private final        MazeScore  score;
 
     // ---------------------------------------------------------------
     //  Game state — reset fresh each session via initGameState()
     // ---------------------------------------------------------------
-    private Maze        maze;
-    private MazeSolver  solver;
-    private Point       playerPosition;
-    private Button[][]  cellButtons;
-    private boolean[]   inputLocked;
-    private Label       playerDistanceLabel;
-    private Label       bfsDistanceLabel;
-    private Label       playerTickLabel;
-    private Label       bfsTickLabel;
-    private StackPane   gameRoot;
-    private Timeline    soloBfsTimeline;
-    private Label       notifierLabel;
+    private Maze       maze;
+    private MazeSolver solver;
+    private Point      playerPosition;
+    private Button[][] cellButtons;
+    private boolean[]  inputLocked;
+    private Label      playerDistanceLabel;
+    private Label      bfsDistanceLabel;
+    private Label      playerTickLabel;
+    private Label      bfsTickLabel;
+    private StackPane  gameRoot;
+    private Timeline   soloBfsTimeline;
+    private Label      notifierLabel;
 
     /**
      * Constructs a MazeUI bound to the given Stage and score tracker.
@@ -182,7 +177,7 @@ public final class MazeUI
      * @param stageParam the primary JavaFX Stage
      * @param scoreParam the shared tick score tracker
      */
-    public MazeUI(final Stage     stageParam,
+    public MazeUI(final Stage stageParam,
                   final MazeScore scoreParam)
     {
         stage = stageParam;
@@ -242,8 +237,8 @@ public final class MazeUI
         final VBox  root;
         final Scene scene;
 
-        titleLabel    = buildLabel("MAZE RACE", FONT_SIZE_TITLE_PT,
-                                   FontWeight.BOLD, COLOR_FOREST_DARK);
+        titleLabel = buildLabel("BEAT THE BFS", FONT_SIZE_TITLE_PT,
+                                FontWeight.BOLD, COLOR_FOREST_DARK);
         titleLabel.setTextAlignment(TextAlignment.CENTER);
 
         subtitleLabel = buildLabel("Race the algorithm through the unknown forest",
@@ -254,11 +249,11 @@ public final class MazeUI
         headerBox = new VBox(SPACING_SMALL_PX, titleLabel, subtitleLabel);
         headerBox.setAlignment(Pos.CENTER);
 
-        seedRow    = buildSeedRow();
-        buttonRow  = buildTitleButtonRow();
+        seedRow      = buildSeedRow();
+        buttonRow    = buildTitleButtonRow();
         rulesHeading = buildLabel("How to Play", FONT_SIZE_HEADING_PT,
                                   FontWeight.BOLD, COLOR_FOREST_DARK);
-        rulesList  = buildRulesList();
+        rulesList    = buildRulesList();
 
         root = new VBox(SPACING_LARGE_PX,
                         headerBox,
@@ -327,9 +322,9 @@ public final class MazeUI
         list = new VBox(SPACING_SMALL_PX);
         list.setAlignment(Pos.CENTER_LEFT);
 
-        for(final String[] rule : RULES)
+        for (final String[] rule : RULES)
         {
-            list.getChildren().add(buildRuleRow(rule[0], rule[1]));
+            list.getChildren().add(buildRuleRow(rule[ RULE_TITLE_COL ], rule[ RULE_DESC_COL ]));
         }
 
         return list;
@@ -378,10 +373,10 @@ public final class MazeUI
         maze           = newMaze;
         solver         = new BFSSolver(maze); // substitution: MazeSolver reference holds BFSSolver
         playerPosition = maze.getStart();
-        cellButtons    = new Button[GRID_ROWS][GRID_COLS];
-        inputLocked    = new boolean[]{ false };
+        cellButtons    = new Button[ GRID_ROWS ][ GRID_COLS ];
+        inputLocked    = new boolean[]{false};
 
-        maze.markVisitedByPlayer(playerPosition.getCol(), playerPosition.getRow());
+        maze.markVisitedByPlayer(playerPosition.col(), playerPosition.row());
 
         final Scene gameScene;
         gameScene = createGameScene();
@@ -404,7 +399,7 @@ public final class MazeUI
         final VBox     content;
         final Scene    scene;
 
-        gameHeading   = buildLabel("Maze Race", FONT_SIZE_HEADING_PT,
+        gameHeading   = buildLabel("Beat The BFS", FONT_SIZE_HEADING_PT,
                                    FontWeight.BOLD, COLOR_FOREST_DARK);
         tickRow       = buildTickRow();
         mazeGrid      = buildMazeGrid();
@@ -438,11 +433,11 @@ public final class MazeUI
      */
     private HBox buildTickRow()
     {
-        playerTickLabel = buildLabel("Your ticks: 0", FONT_SIZE_TICK_PT,
+        playerTickLabel = buildLabel("Your ticks:", FONT_SIZE_TICK_PT,
                                      FontWeight.NORMAL, COLOR_PLAYER);
 
-        bfsTickLabel    = buildLabel("BFS ticks: 0", FONT_SIZE_TICK_PT,
-                                     FontWeight.NORMAL, COLOR_BFS);
+        bfsTickLabel = buildLabel("BFS ticks:", FONT_SIZE_TICK_PT,
+                                  FontWeight.NORMAL, COLOR_BFS);
 
         final HBox row;
         row = new HBox(SPACING_LARGE_PX, playerTickLabel, bfsTickLabel);
@@ -462,16 +457,16 @@ public final class MazeUI
         grid.setVgap(GRID_GAP_PX);
         grid.setAlignment(Pos.CENTER);
 
-        for(int row = 0; row < GRID_ROWS; row++)
+        for (int row = 0; row < GRID_ROWS; row++)
         {
-            for(int col = 0; col < GRID_COLS; col++)
+            for (int col = 0; col < GRID_COLS; col++)
             {
                 final Button cell;
                 cell = new Button();
                 cell.setPrefSize(CELL_SIZE_PX, CELL_SIZE_PX);
                 cell.setFocusTraversable(false);
                 cell.getStyleClass().add(CSS_CELL_HIDDEN);
-                cellButtons[row][col] = cell;
+                cellButtons[ row ][ col ] = cell;
                 grid.add(cell, col, row);
             }
         }
@@ -501,9 +496,9 @@ public final class MazeUI
                                          FONT_SIZE_PROGRESS_PT,
                                          FontWeight.NORMAL, COLOR_PLAYER);
 
-        bfsDistanceLabel    = buildLabel("BFS distance to exit: --",
-                                         FONT_SIZE_PROGRESS_PT,
-                                         FontWeight.NORMAL, COLOR_BFS);
+        bfsDistanceLabel = buildLabel("BFS distance to exit: --",
+                                      FONT_SIZE_PROGRESS_PT,
+                                      FontWeight.NORMAL, COLOR_BFS);
 
         final HBox row;
         row = new HBox(SPACING_LARGE_PX, playerDistanceLabel, bfsDistanceLabel);
@@ -523,9 +518,9 @@ public final class MazeUI
         final Point exitPoint;
         exitPoint = maze.getExit();
 
-        for(int row = 0; row < GRID_ROWS; row++)
+        for (int row = 0; row < GRID_ROWS; row++)
         {
-            for(int col = 0; col < GRID_COLS; col++)
+            for (int col = 0; col < GRID_COLS; col++)
             {
                 renderCell(col, row, exitPoint);
             }
@@ -535,8 +530,8 @@ public final class MazeUI
     /*
      * Renders a single cell button at the given position.
      */
-    private void renderCell(final int   col,
-                            final int   row,
+    private void renderCell(final int col,
+                            final int row,
                             final Point exitPoint)
     {
         final Button    button;
@@ -544,27 +539,27 @@ public final class MazeUI
         final boolean   isPlayer;
         final boolean   isExit;
 
-        button   = cellButtons[row][col];
+        button   = cellButtons[ row ][ col ];
         cell     = maze.getCell(col, row);
-        isPlayer = playerPosition.getCol() == col
-                   && playerPosition.getRow() == row;
-        isExit   = exitPoint.getCol() == col
-                   && exitPoint.getRow() == row;
+        isPlayer = playerPosition.col() == col
+                   && playerPosition.row() == row;
+        isExit   = exitPoint.col() == col
+                   && exitPoint.row() == row;
 
         // Clear all cell CSS classes before reapplying
         button.getStyleClass().removeIf(s -> s.startsWith("cell-"));
         button.setText("");
         button.setStyle("");
 
-        if(isPlayer)
+        if (isPlayer)
         {
             applyPlayerStyle(button, cell);
         }
-        else if(isExit)
+        else if (isExit)
         {
             applyExitStyle(button);
         }
-        else if(cell.isVisitedByPlayer())
+        else if (cell.isVisitedByPlayer())
         {
             applyVisitedStyle(button, col, row, cell);
         }
@@ -577,7 +572,7 @@ public final class MazeUI
     /*
      * Applies the player marker style.
      */
-    private void applyPlayerStyle(final Button    button,
+    private void applyPlayerStyle(final Button button,
                                   final Maze.Cell cell)
     {
         button.getStyleClass().add(CSS_CELL_PLAYER);
@@ -598,31 +593,44 @@ public final class MazeUI
         button.setTextFill(Color.web(COLOR_EXIT_TEXT));
     }
 
-    /*
+    /**
      * Applies the visited cell style with alternating grass colours.
+     *
+     * @param button input
+     * @param col    column user occupies
+     * @param row    row user occupies
+     * @param cell   cell user occupies
      */
-    private void applyVisitedStyle(final Button    button,
-                                   final int       col,
-                                   final int       row,
+    private void applyVisitedStyle(final Button button,
+                                   final int col,
+                                   final int row,
                                    final Maze.Cell cell)
     {
         final String cssClass;
-        cssClass = ((col + row) % 2 == 0)
-            ? CSS_CELL_VISITED_LIGHT
-            : CSS_CELL_VISITED_DARK;
+        if ((col + row) % EVEN_GRASS_TILE == CHECK_EVEN)
+        {
+            cssClass = CSS_CELL_VISITED_LIGHT;
+        }
+        else
+        {
+            cssClass = CSS_CELL_VISITED_DARK;
+        }
 
         button.getStyleClass().add(cssClass);
         applyWallBorders(button, cell);
     }
 
-    /*
+    /**
      * Applies revealed wall borders programmatically.
      * CSS handles background; walls use inline border style only,
      * combining whichever sides have been revealed.
      * This avoids multiple CSS classes overwriting each other's
      * -fx-border-width property.
+     *
+     * @param button user input
+     * @param cell   cell user occupies
      */
-    private void applyWallBorders(final Button    button,
+    private void applyWallBorders(final Button button,
                                   final Maze.Cell cell)
     {
         final int topPx;
@@ -630,15 +638,51 @@ public final class MazeUI
         final int rightPx;
         final int leftPx;
 
-        topPx    = cell.isRevealedNorth() ? WALL_THICKNESS_PX : WALL_NONE_PX;
-        bottomPx = cell.isRevealedSouth() ? WALL_THICKNESS_PX : WALL_NONE_PX;
-        rightPx  = cell.isRevealedEast()  ? WALL_THICKNESS_PX : WALL_NONE_PX;
-        leftPx   = cell.isRevealedWest()  ? WALL_THICKNESS_PX : WALL_NONE_PX;
+        boolean draw;
 
-        final boolean anyWall;
-        anyWall = topPx > 0 || bottomPx > 0 || rightPx > 0 || leftPx > 0;
+        draw = false;
 
-        if(anyWall)
+        if (cell.isRevealedNorth())
+        {
+            topPx = WALL_THICKNESS_PX;
+            draw  = true;
+        }
+        else
+        {
+            topPx = WALL_NONE_PX;
+        }
+
+        if (cell.isRevealedSouth())
+        {
+            bottomPx = WALL_THICKNESS_PX;
+            draw     = true;
+        }
+        else
+        {
+            bottomPx = WALL_NONE_PX;
+        }
+
+        if (cell.isRevealedEast())
+        {
+            rightPx = WALL_THICKNESS_PX;
+            draw    = true;
+        }
+        else
+        {
+            rightPx = WALL_NONE_PX;
+        }
+
+        if (cell.isRevealedWest())
+        {
+            leftPx = WALL_THICKNESS_PX;
+            draw   = true;
+        }
+        else
+        {
+            leftPx = WALL_NONE_PX;
+        }
+
+        if (draw)
         {
             final String borderStyle;
             borderStyle = "-fx-border-color: " + WALL_COLOR + ";"
@@ -683,7 +727,7 @@ public final class MazeUI
     {
         scene.setOnKeyPressed(event ->
                               {
-                                  if(inputLocked[0] || score.hasPlayerFinished())
+                                  if (inputLocked[ FIRST_INDEX ] || score.hasPlayerFinished())
                                   {
                                       return;
                                   }
@@ -691,21 +735,21 @@ public final class MazeUI
                                   final Direction direction;
                                   direction = keyCodeToDirection(event.getCode());
 
-                                  if(direction == null)
+                                  if (direction == null)
                                   {
                                       return;
                                   }
 
-                                  inputLocked[0] = true;
+                                  inputLocked[ FIRST_INDEX ] = true;
 
                                   try
                                   {
                                       processPlayerMove(direction);
                                   }
-                                  catch(final InvalidMoveException e)
+                                  catch (final InvalidMoveException e)
                                   {
                                       System.err.println("Invalid move attempted: " + e.getMessage());
-                                      inputLocked[0] = false;
+                                      inputLocked[ FIRST_INDEX ] = false;
                                       return;
                                   }
 
@@ -717,17 +761,17 @@ public final class MazeUI
                                   final boolean playerJustFinished;
                                   playerJustFinished = playerPosition.equals(maze.getExit());
 
-                                  if(playerJustFinished)
+                                  if (playerJustFinished)
                                   {
                                       score.markPlayerFinished();
                                   }
 
-                                  if(score.hasAlgorithmFinished())
+                                  if (score.hasAlgorithmFinished())
                                   {
                                       // BFS already done — no more BFS steps needed
-                                      inputLocked[0] = false;
+                                      inputLocked[ FIRST_INDEX ] = false;
 
-                                      if(playerJustFinished)
+                                      if (playerJustFinished)
                                       {
                                           showEndOverlay();
                                       }
@@ -746,7 +790,7 @@ public final class MazeUI
      */
     private void processPlayerMove(final Direction direction)
     {
-        if(direction == null)
+        if (direction == null)
         {
             throw new InvalidMoveException(
                 "Attempted to process a null direction.");
@@ -756,15 +800,15 @@ public final class MazeUI
         final int     row;
         final boolean movePossible;
 
-        col          = playerPosition.getCol();
-        row          = playerPosition.getRow();
+        col          = playerPosition.col();
+        row          = playerPosition.row();
         movePossible = maze.isValidMove(col, row, direction);
 
-        if(movePossible)
+        if (movePossible)
         {
             playerPosition = playerPosition.step(direction);
-            maze.markVisitedByPlayer(playerPosition.getCol(),
-                                     playerPosition.getRow());
+            maze.markVisitedByPlayer(playerPosition.col(),
+                                     playerPosition.row());
         }
         else
         {
@@ -783,7 +827,7 @@ public final class MazeUI
         bfsTask = new Task<>()
         {
             @Override
-            protected Void call()
+            public Void call()
             {
                 solver.step();
                 return null;
@@ -797,7 +841,7 @@ public final class MazeUI
                                                           final boolean bfsJustFinished;
                                                           bfsJustFinished = solver.hasReachedExit();
 
-                                                          if(bfsJustFinished)
+                                                          if (bfsJustFinished)
                                                           {
                                                               score.markAlgorithmFinished();
                                                           }
@@ -805,13 +849,13 @@ public final class MazeUI
                                                           renderGrid();
                                                           updateProgress();
                                                           hideNotifier();
-                                                          inputLocked[0] = false;
+                                                          inputLocked[ FIRST_INDEX ] = false;
 
-                                                          if(bfsJustFinished && score.hasPlayerFinished())
+                                                          if (bfsJustFinished && score.hasPlayerFinished())
                                                           {
                                                               showEndOverlay();
                                                           }
-                                                          else if(playerJustFinished && !bfsJustFinished)
+                                                          else if (playerJustFinished && !bfsJustFinished)
                                                           {
                                                               startSoloBfsTimeline();
                                                           }
@@ -820,7 +864,7 @@ public final class MazeUI
         bfsTask.setOnFailed(e -> Platform.runLater(() ->
                                                    {
                                                        hideNotifier();
-                                                       inputLocked[0] = false;
+                                                       inputLocked[ FIRST_INDEX ] = false;
                                                        System.err.println("BFS task failed: "
                                                                           + bfsTask.getException().getMessage());
                                                    }));
@@ -850,7 +894,7 @@ public final class MazeUI
                 renderGrid();
                 updateProgress();
 
-                if(solver.hasReachedExit() || solver.isUnsolvable())
+                if (solver.hasReachedExit() || solver.isUnsolvable())
                 {
                     score.markAlgorithmFinished();
                     stopSoloBfsTimeline();
@@ -867,7 +911,7 @@ public final class MazeUI
      */
     private void stopSoloBfsTimeline()
     {
-        if(soloBfsTimeline != null)
+        if (soloBfsTimeline != null)
         {
             soloBfsTimeline.stop();
             soloBfsTimeline = null;
@@ -995,7 +1039,7 @@ public final class MazeUI
      */
     private void handleLoadSeed(final String seedText)
     {
-        if(seedText.isEmpty())
+        if (seedText.isEmpty())
         {
             tryLoadSeedFromFile();
             return;
@@ -1007,7 +1051,7 @@ public final class MazeUI
             seed = Long.parseLong(seedText);
             showGameFromSeed(seed);
         }
-        catch(final NumberFormatException e)
+        catch (final NumberFormatException e)
         {
             showGame();
         }
@@ -1025,7 +1069,7 @@ public final class MazeUI
             MazeFileManager.saveSeed(seed);
             savedLabel.setText("Seed saved to maze_seed.txt");
         }
-        catch(final MazeFileException e)
+        catch (final MazeFileException e)
         {
             savedLabel.setText("Failed to save seed.");
             System.err.println("Seed save failed: " + e.getMessage());
@@ -1044,7 +1088,7 @@ public final class MazeUI
             seed = MazeFileManager.loadSeed();
             showGameFromSeed(seed);
         }
-        catch(final MazeFileException e)
+        catch (final MazeFileException e)
         {
             showGame();
         }
@@ -1059,13 +1103,13 @@ public final class MazeUI
      */
     private Direction keyCodeToDirection(final KeyCode code)
     {
-        return switch(code)
+        return switch (code)
         {
-            case W, UP    -> Direction.NORTH;
-            case S, DOWN  -> Direction.SOUTH;
+            case W, UP -> Direction.NORTH;
+            case S, DOWN -> Direction.SOUTH;
             case D, RIGHT -> Direction.EAST;
-            case A, LEFT  -> Direction.WEST;
-            default       -> null;
+            case A, LEFT -> Direction.WEST;
+            default -> null;
         };
     }
 
@@ -1090,10 +1134,10 @@ public final class MazeUI
     /*
      * Builds a Label with specified font, weight, and text colour.
      */
-    private Label buildLabel(final String     text,
-                             final int        fontSizePt,
+    private Label buildLabel(final String text,
+                             final int fontSizePt,
                              final FontWeight weight,
-                             final String     colorHex)
+                             final String colorHex)
     {
         final Label label;
         label = new Label(text);

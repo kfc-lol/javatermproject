@@ -8,7 +8,8 @@ package ca.bcit.comp2522.games.numbergame;
  * @author Kian Castro
  * @version 1.0
  */
-public final class Slot implements Playable {
+public final class Slot
+{
 
     private int value;
     private boolean isOccupied;
@@ -51,62 +52,5 @@ public final class Slot implements Playable {
         }
         this.value = valueParam;
         this.isOccupied = true;
-    }
-
-    /**
-     * Not used in Slot context - implemented for Playable interface.
-     */
-    @Override
-    public boolean placeNumber(int cellIndex) {
-        // Handled by the game logic, not by individual slots
-        return false;
-    }
-
-    /**
-     * Not used in Slot context - implemented for Playable interface.
-     */
-    @Override
-    public boolean isGameOver() {
-        return false;
-    }
-
-    /**
-     * Not used in Slot context - implemented for Playable interface.
-     */
-    @Override
-    public boolean isWon() {
-        return false;
-    }
-
-    /**
-     * Not used in Slot context - implemented for Playable interface.
-     */
-    @Override
-    public int getCurrentNumber() {
-        return value;
-    }
-
-    /**
-     * Not used in Slot context - implemented for Playable interface.
-     */
-    @Override
-    public int[] getGrid() {
-        return new int[]{value};
-    }
-
-    /**
-     * Not used in Slot context - implemented for Playable interface.
-     */
-    @Override
-    public boolean[] getFilled() {
-        return new boolean[]{isOccupied};
-    }
-
-    /**
-     * Not used in Slot context - implemented for Playable interface.
-     */
-    @Override
-    public int getSuccessfulPlacements() {
-        return isOccupied ? 1 : 0;
     }
 }

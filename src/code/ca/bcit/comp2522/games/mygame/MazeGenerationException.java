@@ -27,7 +27,7 @@ public final class MazeGenerationException extends RuntimeException
      * @param message a description of why generation failed
      * @param cause   the underlying exception that triggered this one
      */
-    public MazeGenerationException(final String    message,
+    public MazeGenerationException(final String message,
                                    final Throwable cause)
     {
         super(message, cause);

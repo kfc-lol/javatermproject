@@ -4,66 +4,115 @@ package ca.bcit.comp2522.games.numbergame;
  * Accumulates win/loss statistics across multiple rounds of play.
  * The summary string matches the format described in the specification.
  */
-public class NumberScore {
+public class NumberScore
+{
 
-    public static final int MIN_GAMES_PLAYED = 0;
-    private int wins;
-    private int losses;
-    private int totalPlacements;
+    private static final int MIN_GAMES_PLAYED = 0;
+    private static final int NO_GAMES_PLAYED  = 0;
+    public static final int SINGULAR = 1;
+    public static final int MIN_WINS = 0;
+    public static final int MIN_LOSSES = 0;
+    private              int wins;
+    private              int losses;
+    private              int totalPlacements;
 
-    /** Record a won round with the given successful-placement count. */
-    public void recordWin(int placements) {
+    /**
+     * Record a won round with the given successful-placement count.
+     *
+     * @param placements numbers placed successfully
+     */
+    public void recordWin(int placements)
+    {
         wins++;
         totalPlacements += placements;
     }
 
-    /** Record a lost round with the given successful-placement count. */
-    public void recordLoss(int placements) {
+    /**
+     * Record a lost round with the given successful-placement count.
+     */
+    public void recordLoss(int placements)
+    {
         losses++;
         totalPlacements += placements;
     }
 
-    public int getWins()            { return wins;            }
-    public int getLosses()          { return losses;           }
-    public int getTotalGames()      { return wins + losses;   }
-    public int getTotalPlacements() { return totalPlacements; }
+    public int getWins()
+    {
+        return wins;
+    }
 
-    public boolean hasGames() { return getTotalGames() > MIN_GAMES_PLAYED; }
+    public int getLosses()
+    {
+        return losses;
+    }
+
+    public int getTotalGames()
+    {
+        return wins + losses;
+    }
+
+    public int getTotalPlacements()
+    {
+        return totalPlacements;
+    }
+
+    public boolean hasGames()
+    {
+        return getTotalGames() > MIN_GAMES_PLAYED;
+    }
 
     /**
-     * Build a human-readable summary string that mirrors the examples given
-     * in the specification, e.g.:
-     * <pre>
-     * "You lost 1 out of 1 game, with 12 successful placements,
-     *  an average of 12 per game."
-     *
-     * "You won 1 out of 2 games and you lost 1 out of 2 games,
-     *  with 24 successful placements, an average of 12 per game."
-     * </pre>
+     * Builds a summary string.
      */
-    public String getSummary() {
-        int total = getTotalGames();
-        if (total == 0) return "No games played yet.";
+    public String getSummary()
+    {
+        final int total = getTotalGames();
+        if (total == NO_GAMES_PLAYED)
+        {
+            return "No games played yet.";
+        }
+        final double avg;
+        final String avgStr;
+        final String gameWord;
+        final String plWord;
+        final StringBuilder sb;
 
-        double avg    = (double) totalPlacements / total;
-        String avgStr = (avg % 1.0 == 0.0)
-            ? String.valueOf((int) avg)
-            : String.format("%.2f", avg);
+        avg = (double) totalPlacements / total;
+        avgStr = String.format("%.2f", avg);
+        if (total == SINGULAR)
+        {
+            gameWord = "game";
+        }
+        else
+        {
+            gameWord = "games";
+        }
 
-        String gameWord = total == 1 ? "game" : "games";
-        String plWord   = totalPlacements == 1 ? "placement" : "placements";
+        if (totalPlacements == SINGULAR)
+        {
+            plWord = "placement";
+        }
+        else
+        {
+            plWord = "placements";
+        }
 
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
 
-        if (wins > 0 && losses > 0) {
+        if (wins > MIN_WINS && losses > MIN_LOSSES)
+        {
             sb.append("You won ").append(wins).append(" out of ").append(total)
               .append(" ").append(gameWord)
               .append(" and you lost ").append(losses).append(" out of ").append(total)
               .append(" ").append(gameWord);
-        } else if (wins > 0) {
+        }
+        else if (wins > MIN_WINS)
+        {
             sb.append("You won ").append(wins).append(" out of ").append(total)
               .append(" ").append(gameWord);
-        } else {
+        }
+        else
+        {
             sb.append("You lost ").append(losses).append(" out of ").append(total)
               .append(" ").append(gameWord);
         }

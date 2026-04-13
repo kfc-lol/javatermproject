@@ -16,6 +16,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public final class NumberGameLauncher
 {
+    public static final int COUNT = 1;
     private static boolean javaFxStarted = false;
     private static CountDownLatch shutdownLatch;
 
@@ -34,7 +35,8 @@ public final class NumberGameLauncher
      */
     public static void launch()
     {
-        shutdownLatch = new CountDownLatch(1);
+        shutdownLatch = new CountDownLatch(COUNT);
+
 
         if(!javaFxStarted)
         {

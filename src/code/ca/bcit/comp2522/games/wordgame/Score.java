@@ -14,20 +14,23 @@ import java.util.List;
  * @author Kian Castro
  * @version 1.0
  */
-public final class Score {
+public final class Score
+{
     private static final int FIRST_ATTEMPT_POINTS = 2;
     private static final int SECOND_ATTEMPT_POINTS = 1;
     private static final double ZERO = 0.0;
+    private static final int GAMES_PLAYED = 0;
+    private static final int CORRECT_FIRST = 0;
+    private static final int CORRECT_SECOND = 0;
+    private static final int INCORRECT = 0;
+    private static final int NO_GAMES_PLAYED = 0;
 
     private final LocalDateTime dateTimePlayed;
     private final int numGamesPlayed;
     private final int numCorrectFirstAttempt;
     private final int numCorrectSecondAttempt;
     private final int numIncorrectTwoAttempts;
-
-
-
-    private int score;
+    private final int score;
 
     /**
      * Constructs a Score object with game session statistics.
@@ -42,7 +45,8 @@ public final class Score {
                  final int numGamesPlayedParam,
                  final int numCorrectFirstAttemptParam,
                  final int numCorrectSecondAttemptParam,
-                 final int numIncorrectTwoAttemptsParam) {
+                 final int numIncorrectTwoAttemptsParam)
+    {
         this.dateTimePlayed = dateTimePlayedParam;
         this.numGamesPlayed = numGamesPlayedParam;
         this.numCorrectFirstAttempt = numCorrectFirstAttemptParam;
@@ -109,11 +113,12 @@ public final class Score {
      *
      * @return the average points per game, or 0.0 if numGamesPlayed is 0
      */
-    public double getAveragePointsPerGame() {
+    public double getAveragePointsPerGame()
+    {
         final int totalPoints = (numCorrectFirstAttempt * FIRST_ATTEMPT_POINTS)
                                 + (numCorrectSecondAttempt * SECOND_ATTEMPT_POINTS);
 
-        if (numGamesPlayed == 0) {
+        if (numGamesPlayed == NO_GAMES_PLAYED) {
             return ZERO;
         }
 
@@ -126,7 +131,8 @@ public final class Score {
      * @return formatted string suitable for score.txt file
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         final StringBuilder sb;
         sb = new StringBuilder();
@@ -141,7 +147,8 @@ public final class Score {
         sb.append("\nIncorrect Attempts: ");
         sb.append(numIncorrectTwoAttempts);
         sb.append("\nScore: ");
-        sb.append(score + " points\n");
+        sb.append(score);
+        sb.append(" points\n");
 
         return sb.toString();
     }
@@ -178,10 +185,10 @@ public final class Score {
         try (final BufferedReader br = new BufferedReader(new FileReader(filenameParam))) {
             String line;
             LocalDateTime dateTime = null;
-            int gamesPlayed = 0;
-            int correctFirst = 0;
-            int correctSecond = 0;
-            int incorrect = 0;
+            int gamesPlayed = GAMES_PLAYED;
+            int correctFirst = CORRECT_FIRST;
+            int correctSecond = CORRECT_SECOND;
+            int incorrect = INCORRECT;
 
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("Date and Time: ")) {

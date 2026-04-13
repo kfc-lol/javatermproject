@@ -9,22 +9,16 @@ package ca.bcit.comp2522.games.mygame;
  * @author Kian Castro
  * @version 1.0
  */
-public final class Point
+public record Point(int col, int row)
 {
-    private final int col;
-    private final int row;
-
     /**
      * Constructs a Point at the given column and row.
      *
      * @param col the column index (zero-based)
      * @param row the row index (zero-based)
      */
-    public Point(final int col,
-                 final int row)
+    public Point
     {
-        this.col = col;
-        this.row = row;
     }
 
     /**
@@ -32,7 +26,8 @@ public final class Point
      *
      * @return the column index
      */
-    public int getCol()
+    @Override
+    public int col()
     {
         return col;
     }
@@ -42,7 +37,8 @@ public final class Point
      *
      * @return the row index
      */
-    public int getRow()
+    @Override
+    public int row()
     {
         return row;
     }
@@ -58,13 +54,13 @@ public final class Point
     {
         final Point result;
 
-        switch(direction)
+        switch (direction)
         {
             case NORTH -> result = new Point(col, row - 1);
             case SOUTH -> result = new Point(col, row + 1);
-            case EAST  -> result = new Point(col + 1, row);
-            case WEST  -> result = new Point(col - 1, row);
-            default    -> result = new Point(col, row);
+            case EAST -> result = new Point(col + 1, row);
+            case WEST -> result = new Point(col - 1, row);
+            default -> result = new Point(col, row);
         }
 
         return result;
@@ -79,8 +75,8 @@ public final class Point
      */
     public int manhattanDistanceTo(final Point target)
     {
-        return Math.abs(col - target.getCol())
-               + Math.abs(row - target.getRow());
+        return Math.abs(col - target.col())
+               + Math.abs(row - target.row());
     }
 
     /**
@@ -92,12 +88,12 @@ public final class Point
     @Override
     public boolean equals(final Object other)
     {
-        if(this == other)
+        if (this == other)
         {
             return true;
         }
 
-        if(!(other instanceof Point))
+        if (!(other instanceof Point))
         {
             return false;
         }
@@ -106,18 +102,6 @@ public final class Point
         otherPoint = (Point) other;
 
         return col == otherPoint.col && row == otherPoint.row;
-    }
-
-    /**
-     * Returns a hash code consistent with equals, based on col and row.
-     * Required so Point works correctly as a key in HashMap and HashSet.
-     *
-     * @return hash code
-     */
-    @Override
-    public int hashCode()
-    {
-        return 31 * col + row;
     }
 
     /**

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * seed reproducibility, and basic structural properties of
  * the generated grid.
  *
- * @author Your Name
+ * @author Kian Castro
  * @version 1.0
  */
 public class MazeGeneratorTest

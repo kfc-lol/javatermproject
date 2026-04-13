@@ -16,7 +16,18 @@ import java.util.Random;
  */
 public final class MazeGenerator
 {
+    private static final int STARTING_COL    = 0;
     private static final int DIRECTION_COUNT = 4;
+    private static final int MIN_COL_AMT     = 2;
+    private static final int MIN_ROW_AMT     = 2;
+    private static final int STARTING_ROW    = 0;
+    private static final int MIN_COL         = 0;
+    private static final int MAX_COL         = 0;
+    private static final int EAST_DELTA      = 1;
+    private static final int WEST_DELTA      = -1;
+    private static final int NO_DELTA        = 0;
+    private static final int SOUTH_DELTA     = 1;
+    private static final int NORTH_DELTA     = -1;
 
     /**
      * Private constructor to prevent instantiation.
@@ -37,11 +48,11 @@ public final class MazeGenerator
      * @return a fully carved Cell grid ready to be wrapped in a Maze
      * @throws IllegalArgumentException if cols or rows are less than two
      */
-    public static Maze.Cell[][] generate(final int  cols,
-                                         final int  rows,
+    public static Maze.Cell[][] generate(final int cols,
+                                         final int rows,
                                          final long seed)
     {
-        if(cols < 2 || rows < 2)
+        if (cols < MIN_COL_AMT || rows < MIN_ROW_AMT)
         {
             throw new MazeGenerationException(
                 "Maze dimensions must be at least 2x2. Got: "
@@ -54,7 +65,13 @@ public final class MazeGenerator
         grid   = buildEmptyGrid(cols, rows);
         random = new Random(seed);
 
-        carve(grid, cols, rows, random, 0, 0);
+        carve(grid,
+              cols,
+              rows,
+              random,
+              STARTING_COL,
+              STARTING_ROW);
+
 
         return grid;
     }
@@ -66,13 +83,13 @@ public final class MazeGenerator
                                                 final int rows)
     {
         final Maze.Cell[][] grid;
-        grid = new Maze.Cell[rows][cols];
+        grid = new Maze.Cell[ rows ][ cols ];
 
-        for(int row = 0; row < rows; row++)
+        for (int row = 0; row < rows; row++)
         {
-            for(int col = 0; col < cols; col++)
+            for (int col = 0; col < cols; col++)
             {
-                grid[row][col] = new Maze.Cell();
+                grid[ row ][ col ] = new Maze.Cell();
             }
         }
 
@@ -85,16 +102,16 @@ public final class MazeGenerator
      * shared wall between the current cell and the chosen neighbour.
      */
     private static void carve(final Maze.Cell[][] grid,
-                              final int           cols,
-                              final int           rows,
-                              final Random        random,
-                              final int           col,
-                              final int           row)
+                              final int cols,
+                              final int rows,
+                              final Random random,
+                              final int col,
+                              final int row)
     {
         final List<Direction> directions;
         directions = buildShuffledDirections(random);
 
-        for(final Direction direction : directions)
+        for (final Direction direction : directions)
         {
             final int neighbourCol;
             final int neighbourRow;
@@ -102,11 +119,28 @@ public final class MazeGenerator
             neighbourCol = col + colDelta(direction);
             neighbourRow = row + rowDelta(direction);
 
-            if(isUnvisited(grid, cols, rows, neighbourCol, neighbourRow))
+            if (isUnvisited(grid,
+                            cols,
+                            rows,
+                            neighbourCol,
+                            neighbourRow))
             {
-                removeWallBetween(grid, col, row, neighbourCol,
-                                  neighbourRow, direction);
-                carve(grid, cols, rows, random, neighbourCol, neighbourRow);
+                removeWallBetween(
+                    grid,
+                    col,
+                    row,
+                    neighbourCol,
+                    neighbourRow,
+                    direction
+                                 );
+                carve(
+                    grid,
+                    cols,
+                    rows,
+                    random,
+                    neighbourCol,
+                    neighbourRow
+                     );
             }
         }
     }
@@ -122,7 +156,8 @@ public final class MazeGenerator
         directions.add(Direction.SOUTH);
         directions.add(Direction.EAST);
         directions.add(Direction.WEST);
-        Collections.shuffle(directions, random);
+        Collections.shuffle(directions,
+                            random);
         return directions;
     }
 
@@ -131,18 +166,18 @@ public final class MazeGenerator
      * walls of that cell are still intact (i.e. not yet visited by carve).
      */
     private static boolean isUnvisited(final Maze.Cell[][] grid,
-                                       final int           cols,
-                                       final int           rows,
-                                       final int           col,
-                                       final int           row)
+                                       final int cols,
+                                       final int rows,
+                                       final int col,
+                                       final int row)
     {
-        if(col < 0 || col >= cols || row < 0 || row >= rows)
+        if (col < MIN_COL || col >= cols || row < MAX_COL || row >= rows)
         {
             return false;
         }
 
         final Maze.Cell cell;
-        cell = grid[row][col];
+        cell = grid[ row ][ col ];
 
         return cell.hasWallNorth()
                && cell.hasWallSouth()
@@ -155,19 +190,19 @@ public final class MazeGenerator
      * in the given direction.
      */
     private static void removeWallBetween(final Maze.Cell[][] grid,
-                                          final int           col,
-                                          final int           row,
-                                          final int           neighbourCol,
-                                          final int           neighbourRow,
-                                          final Direction     direction)
+                                          final int col,
+                                          final int row,
+                                          final int neighbourCol,
+                                          final int neighbourRow,
+                                          final Direction direction)
     {
         final Maze.Cell current;
         final Maze.Cell neighbour;
 
-        current   = grid[row][col];
-        neighbour = grid[neighbourRow][neighbourCol];
+        current   = grid[ row ][ col ];
+        neighbour = grid[ neighbourRow ][ neighbourCol ];
 
-        switch(direction)
+        switch (direction)
         {
             case NORTH ->
             {
@@ -189,7 +224,9 @@ public final class MazeGenerator
                 current.removeWallWest();
                 neighbour.removeWallEast();
             }
-            default -> { }
+            default ->
+            {
+            }
         }
     }
 
@@ -198,11 +235,11 @@ public final class MazeGenerator
      */
     private static int colDelta(final Direction direction)
     {
-        return switch(direction)
+        return switch (direction)
         {
-            case EAST  ->  1;
-            case WEST  -> -1;
-            default    ->  0;
+            case EAST -> EAST_DELTA;
+            case WEST -> WEST_DELTA;
+            default -> NO_DELTA;
         };
     }
 
@@ -211,11 +248,11 @@ public final class MazeGenerator
      */
     private static int rowDelta(final Direction direction)
     {
-        return switch(direction)
+        return switch (direction)
         {
-            case SOUTH ->  1;
-            case NORTH -> -1;
-            default    ->  0;
+            case SOUTH -> SOUTH_DELTA;
+            case NORTH -> NORTH_DELTA;
+            default -> NO_DELTA;
         };
     }
 }

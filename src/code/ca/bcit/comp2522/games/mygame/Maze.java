@@ -14,10 +14,10 @@ import java.util.NoSuchElementException;
  */
 public final class Maze implements Iterable<Maze.Cell>
 {
-    private static final int START_COL = 0;
-    private static final int START_ROW = 0;
-    public static final int EXIT_COL_OFFSET = 1;
-    public static final int EXIT_ROW_OFFSET = 1;
+    private static final int START_COL       = 0;
+    private static final int START_ROW       = 0;
+    private static final int EXIT_COL_OFFSET = 1;
+    private static final int EXIT_ROW_OFFSET = 1;
 
     private final int      cols;
     private final int      rows;
@@ -35,10 +35,10 @@ public final class Maze implements Iterable<Maze.Cell>
      * @param grid the fully generated cell grid
      * @param seed the seed used to generate this maze
      */
-    public Maze(final int      cols,
-                final int      rows,
+    public Maze(final int cols,
+                final int rows,
                 final Cell[][] grid,
-                final long     seed)
+                final long seed)
     {
         this.cols  = cols;
         this.rows  = rows;
@@ -71,7 +71,7 @@ public final class Maze implements Iterable<Maze.Cell>
                         final int row)
     {
         validatePosition(col, row);
-        return grid[row][col];
+        return grid[ row ][ col ];
     }
 
     /**
@@ -84,8 +84,8 @@ public final class Maze implements Iterable<Maze.Cell>
      * @return true if the move is valid (no wall in that direction)
      * @throws IllegalArgumentException if the position is out of bounds
      */
-    public boolean isValidMove(final int       col,
-                               final int       row,
+    public boolean isValidMove(final int col,
+                               final int row,
                                final Direction direction)
     {
         validatePosition(col, row);
@@ -93,15 +93,15 @@ public final class Maze implements Iterable<Maze.Cell>
         final Cell    currentCell;
         final boolean wallBlocking;
 
-        currentCell = grid[row][col];
+        currentCell = grid[ row ][ col ];
 
-        switch(direction)
+        switch (direction)
         {
             case NORTH -> wallBlocking = currentCell.hasWallNorth();
             case SOUTH -> wallBlocking = currentCell.hasWallSouth();
-            case EAST  -> wallBlocking = currentCell.hasWallEast();
-            case WEST  -> wallBlocking = currentCell.hasWallWest();
-            default    -> wallBlocking = true;
+            case EAST -> wallBlocking = currentCell.hasWallEast();
+            case WEST -> wallBlocking = currentCell.hasWallWest();
+            default -> wallBlocking = true;
         }
 
         return !wallBlocking;
@@ -116,22 +116,24 @@ public final class Maze implements Iterable<Maze.Cell>
      * @param direction the direction of the blocked wall
      * @throws IllegalArgumentException if the position is out of bounds
      */
-    public void revealWall(final int       col,
-                           final int       row,
+    public void revealWall(final int col,
+                           final int row,
                            final Direction direction)
     {
         validatePosition(col, row);
 
         final Cell cell;
-        cell = grid[row][col];
+        cell = grid[ row ][ col ];
 
-        switch(direction)
+        switch (direction)
         {
             case NORTH -> cell.revealWallNorth();
             case SOUTH -> cell.revealWallSouth();
-            case EAST  -> cell.revealWallEast();
-            case WEST  -> cell.revealWallWest();
-            default    -> { }
+            case EAST -> cell.revealWallEast();
+            case WEST -> cell.revealWallWest();
+            default ->
+            {
+            }
         }
     }
 
@@ -146,7 +148,7 @@ public final class Maze implements Iterable<Maze.Cell>
                                     final int row)
     {
         validatePosition(col, row);
-        grid[row][col].markVisitedByPlayer();
+        grid[ row ][ col ].markVisitedByPlayer();
     }
 
     /**
@@ -224,7 +226,7 @@ public final class Maze implements Iterable<Maze.Cell>
     private void validatePosition(final int col,
                                   final int row)
     {
-        if(!isInBounds(col, row))
+        if (!isInBounds(col, row))
         {
             throw new InvalidMoveException(
                 "Position out of bounds: col=" + col + " row=" + row);
@@ -260,14 +262,14 @@ public final class Maze implements Iterable<Maze.Cell>
 
         {
             // Instance initializer: all walls present, nothing revealed
-            wallNorth      = true;
-            wallSouth      = true;
-            wallEast       = true;
-            wallWest       = true;
-            revealedNorth  = false;
-            revealedSouth  = false;
-            revealedEast   = false;
-            revealedWest   = false;
+            wallNorth       = true;
+            wallSouth       = true;
+            wallEast        = true;
+            wallWest        = true;
+            revealedNorth   = false;
+            revealedSouth   = false;
+            revealedEast    = false;
+            revealedWest    = false;
             visitedByPlayer = false;
         }
 
@@ -284,49 +286,76 @@ public final class Maze implements Iterable<Maze.Cell>
         /**
          * Removes the north wall of this cell.
          */
-        public void removeWallNorth() { wallNorth = false; }
+        public void removeWallNorth()
+        {
+            wallNorth = false;
+        }
 
         /**
          * Removes the south wall of this cell.
          */
-        public void removeWallSouth() { wallSouth = false; }
+        public void removeWallSouth()
+        {
+            wallSouth = false;
+        }
 
         /**
          * Removes the east wall of this cell.
          */
-        public void removeWallEast()  { wallEast  = false; }
+        public void removeWallEast()
+        {
+            wallEast = false;
+        }
 
         /**
          * Removes the west wall of this cell.
          */
-        public void removeWallWest()  { wallWest  = false; }
+        public void removeWallWest()
+        {
+            wallWest = false;
+        }
 
         // --- Wall reveal (called when player bumps a wall) ---
 
         /**
          * Marks the north wall as revealed to the player.
          */
-        public void revealWallNorth() { revealedNorth = true; }
+        public void revealWallNorth()
+        {
+            revealedNorth = true;
+        }
 
         /**
          * Marks the south wall as revealed to the player.
          */
-        public void revealWallSouth() { revealedSouth = true; }
+        public void revealWallSouth()
+        {
+            revealedSouth = true;
+        }
 
         /**
          * Marks the east wall as revealed to the player.
          */
-        public void revealWallEast()  { revealedEast  = true; }
+        public void revealWallEast()
+        {
+            revealedEast = true;
+        }
 
         /**
          * Marks the west wall as revealed to the player.
          */
-        public void revealWallWest()  { revealedWest  = true; }
+        public void revealWallWest()
+        {
+            revealedWest = true;
+        }
 
         /**
          * Marks this cell as visited by the player.
          */
-        public void markVisitedByPlayer() { visitedByPlayer = true; }
+        public void markVisitedByPlayer()
+        {
+            visitedByPlayer = true;
+        }
 
         // --- Wall existence queries ---
 
@@ -335,28 +364,40 @@ public final class Maze implements Iterable<Maze.Cell>
          *
          * @return true if north wall is present
          */
-        public boolean hasWallNorth() { return wallNorth; }
+        public boolean hasWallNorth()
+        {
+            return wallNorth;
+        }
 
         /**
          * Returns true if the south wall exists.
          *
          * @return true if south wall is present
          */
-        public boolean hasWallSouth() { return wallSouth; }
+        public boolean hasWallSouth()
+        {
+            return wallSouth;
+        }
 
         /**
          * Returns true if the east wall exists.
          *
          * @return true if east wall is present
          */
-        public boolean hasWallEast()  { return wallEast;  }
+        public boolean hasWallEast()
+        {
+            return wallEast;
+        }
 
         /**
          * Returns true if the west wall exists.
          *
          * @return true if west wall is present
          */
-        public boolean hasWallWest()  { return wallWest;  }
+        public boolean hasWallWest()
+        {
+            return wallWest;
+        }
 
         // --- Reveal state queries ---
 
@@ -365,35 +406,50 @@ public final class Maze implements Iterable<Maze.Cell>
          *
          * @return true if north wall is revealed
          */
-        public boolean isRevealedNorth() { return revealedNorth; }
+        public boolean isRevealedNorth()
+        {
+            return revealedNorth;
+        }
 
         /**
          * Returns true if the south wall has been revealed to the player.
          *
          * @return true if south wall is revealed
          */
-        public boolean isRevealedSouth() { return revealedSouth; }
+        public boolean isRevealedSouth()
+        {
+            return revealedSouth;
+        }
 
         /**
          * Returns true if the east wall has been revealed to the player.
          *
          * @return true if east wall is revealed
          */
-        public boolean isRevealedEast()  { return revealedEast;  }
+        public boolean isRevealedEast()
+        {
+            return revealedEast;
+        }
 
         /**
          * Returns true if the west wall has been revealed to the player.
          *
          * @return true if west wall is revealed
          */
-        public boolean isRevealedWest()  { return revealedWest;  }
+        public boolean isRevealedWest()
+        {
+            return revealedWest;
+        }
 
         /**
          * Returns true if the player has stepped on this cell.
          *
          * @return true if visited by player
          */
-        public boolean isVisitedByPlayer() { return visitedByPlayer; }
+        public boolean isVisitedByPlayer()
+        {
+            return visitedByPlayer;
+        }
     }
 
     // ===================================================================
@@ -402,9 +458,8 @@ public final class Maze implements Iterable<Maze.Cell>
 
     /**
      * Iterates over all cells in the maze row by row, left to right.
-     * Satisfies the Iterator OOP requirement.
      *
-     * @author Your Name
+     * @author Kian Castro
      * @version 1.0
      */
     private final class MazeIterator implements Iterator<Cell>
@@ -417,15 +472,12 @@ public final class Maze implements Iterable<Maze.Cell>
             currentRow = START_ROW;
         }
 
-        /**
-         * Constructs a MazeIterator starting at position (0, 0).
-         */
         private MazeIterator()
         {
         }
 
         /**
-         * Returns true if there are more cells to iterate over.
+         * Checks if there are any more cells
          *
          * @return true if not all cells have been visited
          */
@@ -444,17 +496,17 @@ public final class Maze implements Iterable<Maze.Cell>
         @Override
         public Cell next()
         {
-            if(!hasNext())
+            if (!hasNext())
             {
                 throw new NoSuchElementException("No more cells in maze.");
             }
 
             final Cell cell;
-            cell = grid[currentRow][currentCol];
+            cell = grid[ currentRow ][ currentCol ];
 
             currentCol++;
 
-            if(currentCol >= cols)
+            if (currentCol >= cols)
             {
                 currentCol = START_COL;
                 currentRow++;

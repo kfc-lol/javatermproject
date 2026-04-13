@@ -7,16 +7,16 @@ import java.util.List;
  * Defines the contract that every solver must fulfil: stepping through
  * the maze one tick at a time, reporting its current display position,
  * and reconstructing the solution path once the exit is reached.
- *
+ * <p>
  * Concrete subclasses implement the search strategy — for example,
  * BFSSolver uses greedy best-first search. MazeUI holds a MazeSolver
  * reference, allowing any concrete solver to be substituted transparently
  * at runtime without changing the UI code (Liskov Substitution Principle).
- *
+ * <p>
  * The private maze field can be found all subclasses so they can query
  * wall data and bounds.
  *
- * @author Your Name
+ * @author Kian Castro
  * @version 1.0
  */
 public abstract class MazeSolver

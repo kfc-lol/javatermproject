@@ -2,18 +2,19 @@ package ca.bcit.comp2522.games.numbergame;
 
 
 /**
- * Interface defining the contract for the Number Placement Game.
- * Any game mode must implement these core operations.
+ * Interface for games.
+ *
+ * @author Kian Castro
+ * @version 1.0
  */
-public interface Playable {
+public interface Playable
+{
 
     /**
      * Attempt to place the current number into the given cell.
      *
      * @param cellIndex 0-based index into the 20-cell grid
-     * @return {@code true} if the placement was accepted; {@code false} if
-     *         the cell was already filled (click ignored) or if the placement
-     *         violated ordering and the game is now over
+     * @return if number placement was successful
      */
     boolean placeNumber(int cellIndex);
 
@@ -36,10 +37,7 @@ public interface Playable {
     int[] getGrid();
 
     /**
-     * @return parallel boolean array; {@code true} means the cell is filled.
+     * @return how many numbers have been successfully placed this round.
      */
-    boolean[] getFilled();
-
-    /** @return how many numbers have been successfully placed this round. */
     int getSuccessfulPlacements();
 }

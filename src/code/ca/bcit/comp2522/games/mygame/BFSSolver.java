@@ -16,10 +16,9 @@ import java.util.*;
  * smoothly with no freezing.
  *
  * MazeUI holds a MazeSolver reference pointing to this instance,
- * demonstrating substitution — the UI works with any MazeSolver subclass
- * without modification.
+ * demonstrating substitution
  *
- * @author Your Name
+ * @author Kian Castro
  * @version 1.0
  */
 public final class BFSSolver extends MazeSolver
@@ -28,7 +27,7 @@ public final class BFSSolver extends MazeSolver
     private final Set<Point>        visited;
     private final Map<Point, Point> parentMap;
     private final Set<String>       wallsHit;
-    private final Maze maze;
+    private final Maze              maze;
 
     private Point   displayPosition;
     private boolean reachedExit;
@@ -46,12 +45,12 @@ public final class BFSSolver extends MazeSolver
         super(mazeParam);
 
         final Point startPoint;
-        this.maze = mazeParam;
-        frontier        = new ArrayList<>();
-        visited         = new HashSet<>();
-        parentMap       = new HashMap<>();
-        wallsHit        = new HashSet<>();
-        reachedExit     = false;
+        this.maze   = mazeParam;
+        frontier    = new ArrayList<>();
+        visited     = new HashSet<>();
+        parentMap   = new HashMap<>();
+        wallsHit    = new HashSet<>();
+        reachedExit = false;
 
         startPoint      = mazeParam.getStart();
         displayPosition = startPoint;
@@ -89,7 +88,7 @@ public final class BFSSolver extends MazeSolver
     /**
      * Executes one solver step — fully processing the frontier cell closest
      * to the exit.
-     *
+     * <p>
      * The frontier is sorted by Manhattan distance to the exit so the closest
      * cell is always processed first. All four directions of that cell are
      * attempted: walls are recorded privately, valid unvisited neighbours are
@@ -101,7 +100,7 @@ public final class BFSSolver extends MazeSolver
     @Override
     public void step()
     {
-        if(reachedExit || frontier.isEmpty())
+        if (reachedExit || frontier.isEmpty())
         {
             return;
         }
@@ -112,13 +111,13 @@ public final class BFSSolver extends MazeSolver
         current         = frontier.removeFirst();
         displayPosition = current;
 
-        if(current.equals(maze.getExit()))
+        if (current.equals(maze.getExit()))
         {
             reachedExit = true;
             return;
         }
 
-        for(final Direction direction : Direction.values())
+        for (final Direction direction : Direction.values())
         {
             processDirection(current, direction);
         }
@@ -173,7 +172,7 @@ public final class BFSSolver extends MazeSolver
         final List<Point> path;
         path = new ArrayList<>();
 
-        if(!reachedExit)
+        if (!reachedExit)
         {
             return path;
         }
@@ -181,7 +180,7 @@ public final class BFSSolver extends MazeSolver
         Point current;
         current = maze.getExit();
 
-        while(current != null)
+        while (current != null)
         {
             path.addFirst(current);
             current = parentMap.get(current);
@@ -201,13 +200,13 @@ public final class BFSSolver extends MazeSolver
      * Blocked directions are recorded privately without touching the Maze model.
      * Valid unvisited neighbours are added to the frontier and visited set.
      */
-    private void processDirection(final Point     from,
+    private void processDirection(final Point from,
                                   final Direction direction)
     {
         final boolean movePossible;
-        movePossible = maze.isValidMove(from.getCol(), from.getRow(), direction);
+        movePossible = maze.isValidMove(from.col(), from.row(), direction);
 
-        if(!movePossible)
+        if (!movePossible)
         {
             recordWallHit(from, direction);
             return;
@@ -216,12 +215,12 @@ public final class BFSSolver extends MazeSolver
         final Point neighbour;
         neighbour = from.step(direction);
 
-        if(!maze.isInBounds(neighbour.getCol(), neighbour.getRow()))
+        if (!maze.isInBounds(neighbour.col(), neighbour.row()))
         {
             return;
         }
 
-        if(visited.contains(neighbour))
+        if (visited.contains(neighbour))
         {
             return;
         }
@@ -248,11 +247,11 @@ public final class BFSSolver extends MazeSolver
      * Records a wall hit privately using a direction-keyed string.
      * Never writes to the Maze model — preserves the player's fog of war.
      */
-    private void recordWallHit(final Point     from,
+    private void recordWallHit(final Point from,
                                final Direction direction)
     {
         final String wallKey;
-        wallKey = from.getCol() + "," + from.getRow() + "," + direction.name();
+        wallKey = from.col() + "," + from.row() + "," + direction.name();
         wallsHit.add(wallKey);
     }
 }

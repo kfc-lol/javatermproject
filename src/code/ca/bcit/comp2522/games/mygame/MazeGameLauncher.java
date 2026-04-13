@@ -40,7 +40,7 @@ public final class MazeGameLauncher
     {
         shutdownLatch = new CountDownLatch(1);
 
-        if(!javaFxStarted)
+        if (!javaFxStarted)
         {
             javaFxStarted = true;
             Platform.startup(MazeGameLauncher::openWindow);
@@ -54,7 +54,7 @@ public final class MazeGameLauncher
         {
             shutdownLatch.await();
         }
-        catch(final InterruptedException e)
+        catch (final InterruptedException e)
         {
             Thread.currentThread().interrupt();
             System.err.println("Maze Race interrupted: " + e.getMessage());

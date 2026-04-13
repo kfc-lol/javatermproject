@@ -11,7 +11,7 @@ import java.util.Scanner;
  * Manages saving and loading maze seeds to and from a text file.
  * Seeds are stored in maze_seed.txt in the working directory, allowing
  * players to save a maze they enjoyed and replay it exactly later.
- *
+ * <p>
  * File reading uses Scanner to read lines and the Stream API to locate
  * and parse the seed value, keeping each operation focused and readable.
  * All file errors are wrapped in MazeFileException so callers can recover
@@ -22,10 +22,10 @@ import java.util.Scanner;
  */
 public final class MazeFileManager
 {
-    private static final String FILE_NAME      = "maze_seed.txt";
-    private static final String SEED_KEY       = "MAZE_SEED=";
-    private static final String SEED_COMMENT   = "# Maze Race saved seed";
-    private static final int    SEED_KEY_LEN   = SEED_KEY.length();
+    private static final String FILE_NAME    = "maze_seed.txt";
+    private static final String SEED_KEY     = "MAZE_SEED = ";
+    private static final String SEED_COMMENT = "# Maze Race saved seed";
+    private static final int    SEED_KEY_LEN = SEED_KEY.length();
 
     /**
      * Private constructor to prevent instantiation.
@@ -51,12 +51,12 @@ public final class MazeFileManager
         final File file;
         file = new File(FILE_NAME);
 
-        try(final FileWriter writer = new FileWriter(file))
+        try (final FileWriter writer = new FileWriter(file))
         {
             writer.write(SEED_COMMENT + System.lineSeparator());
             writer.write(SEED_KEY + seed + System.lineSeparator());
         }
-        catch(final IOException e)
+        catch (final IOException e)
         {
             throw new MazeFileException(
                 "Failed to save maze seed to " + FILE_NAME + ": "
@@ -78,7 +78,7 @@ public final class MazeFileManager
         final File file;
         file = new File(FILE_NAME);
 
-        if(!file.exists())
+        if (!file.exists())
         {
             throw new MazeFileException(
                 FILE_NAME + " does not exist. Save a maze first.");
@@ -110,15 +110,15 @@ public final class MazeFileManager
         final StringBuilder content;
         content = new StringBuilder();
 
-        try(final Scanner scanner = new Scanner(file))
+        try (final Scanner scanner = new Scanner(file))
         {
-            while(scanner.hasNextLine())
+            while (scanner.hasNextLine())
             {
                 content.append(scanner.nextLine());
                 content.append(System.lineSeparator());
             }
         }
-        catch(final IOException e)
+        catch (final IOException e)
         {
             throw new MazeFileException(
                 "Failed to read " + FILE_NAME + ": " + e.getMessage(), e);
@@ -145,7 +145,7 @@ public final class MazeFileManager
                           .filter(Objects::nonNull)
                           .findFirst();
 
-        if(seedValue.isEmpty())
+        if (seedValue.isEmpty())
         {
             throw new MazeFileException(
                 "No valid seed entry found in " + FILE_NAME + ".");
@@ -165,7 +165,7 @@ public final class MazeFileManager
         {
             return Long.parseLong(text);
         }
-        catch(final NumberFormatException e)
+        catch (final NumberFormatException e)
         {
             return null;
         }

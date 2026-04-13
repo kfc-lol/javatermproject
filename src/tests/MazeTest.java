@@ -9,13 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifies cell access, bounds checking, move validation, wall revelation,
  * player visit marking, and the seed stored on construction.
  *
- * @author Your Name
+ * @author Kian Castro
  * @version 1.0
  */
 public class MazeTest
 {
-    private static final int  COLS          = 5;
-    private static final int  ROWS          = 5;
     private static final long SEED          = 42L;
     private static final int  VALID_COL     = 0;
     private static final int  VALID_ROW     = 0;
@@ -65,8 +63,8 @@ public class MazeTest
     {
         final Point start;
         start = maze.getStart();
-        assertEquals(0, start.getCol());
-        assertEquals(0, start.getRow());
+        assertEquals(0, start.col());
+        assertEquals(0, start.row());
     }
 
     @Test
@@ -74,8 +72,8 @@ public class MazeTest
     {
         final Point exit;
         exit = maze.getExit();
-        assertEquals(maze.getCols() - 1, exit.getCol());
-        assertEquals(maze.getRows() - 1, exit.getRow());
+        assertEquals(maze.getCols() - 1, exit.col());
+        assertEquals(maze.getRows() - 1, exit.row());
     }
 
     @Test

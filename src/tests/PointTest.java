@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifies coordinate construction, stepping in all four directions,
  * Manhattan distance calculation, and equals/hashCode contracts.
  *
- * @author Your Name
+ * @author Kian Castro
  * @version 1.0
  */
 public class PointTest
@@ -49,13 +49,13 @@ public class PointTest
     @Test
     void testGetCol_returnsCorrectCol()
     {
-        assertEquals(COL_THREE, pointA.getCol());
+        assertEquals(COL_THREE, pointA.col());
     }
 
     @Test
     void testGetRow_returnsCorrectRow()
     {
-        assertEquals(ROW_FOUR, pointA.getRow());
+        assertEquals(ROW_FOUR, pointA.row());
     }
 
     @Test
@@ -83,8 +83,8 @@ public class PointTest
     {
         final Point result;
         result = pointA.step(Direction.NORTH);
-        assertEquals(EXPECTED_STEP_COL_NORTH, result.getCol());
-        assertEquals(EXPECTED_STEP_ROW_NORTH, result.getRow());
+        assertEquals(EXPECTED_STEP_COL_NORTH, result.col());
+        assertEquals(EXPECTED_STEP_ROW_NORTH, result.row());
     }
 
     @Test
@@ -92,8 +92,8 @@ public class PointTest
     {
         final Point result;
         result = pointA.step(Direction.SOUTH);
-        assertEquals(EXPECTED_STEP_COL_SOUTH, result.getCol());
-        assertEquals(EXPECTED_STEP_ROW_SOUTH, result.getRow());
+        assertEquals(EXPECTED_STEP_COL_SOUTH, result.col());
+        assertEquals(EXPECTED_STEP_ROW_SOUTH, result.row());
     }
 
     @Test
@@ -101,8 +101,8 @@ public class PointTest
     {
         final Point result;
         result = pointA.step(Direction.EAST);
-        assertEquals(EXPECTED_STEP_COL_EAST, result.getCol());
-        assertEquals(EXPECTED_STEP_ROW_EAST, result.getRow());
+        assertEquals(EXPECTED_STEP_COL_EAST, result.col());
+        assertEquals(EXPECTED_STEP_ROW_EAST, result.row());
     }
 
     @Test
@@ -110,8 +110,8 @@ public class PointTest
     {
         final Point result;
         result = pointA.step(Direction.WEST);
-        assertEquals(EXPECTED_STEP_COL_WEST, result.getCol());
-        assertEquals(EXPECTED_STEP_ROW_WEST, result.getRow());
+        assertEquals(EXPECTED_STEP_COL_WEST, result.col());
+        assertEquals(EXPECTED_STEP_ROW_WEST, result.row());
     }
 
     @Test

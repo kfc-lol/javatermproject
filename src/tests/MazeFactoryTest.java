@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifies that both factory methods return valid Maze instances with
  * correct dimensions and that seed-based generation is reproducible.
  *
- * @author Your Name
+ * @author Kian Castro
  * @version 1.0
  */
 public class MazeFactoryTest
@@ -122,8 +122,8 @@ public class MazeFactoryTest
         maze  = MazeFactory.createRandom();
         start = maze.getStart();
 
-        assertEquals(0, start.getCol());
-        assertEquals(0, start.getRow());
+        assertEquals(0, start.col());
+        assertEquals(0, start.row());
     }
 
     @Test
@@ -135,8 +135,8 @@ public class MazeFactoryTest
         maze = MazeFactory.createRandom();
         exit = maze.getExit();
 
-        assertEquals(EXPECTED_COLS - 1, exit.getCol());
-        assertEquals(EXPECTED_ROWS - 1, exit.getRow());
+        assertEquals(EXPECTED_COLS - 1, exit.col());
+        assertEquals(EXPECTED_ROWS - 1, exit.row());
     }
 
     @Test

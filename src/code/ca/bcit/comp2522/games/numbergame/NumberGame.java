@@ -2,62 +2,78 @@ package ca.bcit.comp2522.games.numbergame;
 
 import java.util.Arrays;
 
-/**
- *
- */
-public class NumberGame extends Game {
+public class NumberGame extends Game
+{
 
-    public static final int MIN_GRID_SIZE = 0;
+    private static final int MIN_GRID_SIZE = 0;
+    private static final int INCREMENT_INDEX = 1;
+    private static final int STARTING_VALUE = 0;
 
-    public NumberGame() {
+    public NumberGame()
+    {
         super();
     }
 
-
-    /** Reset all arrays and counters, then generate a fresh number sequence. */
-    public void startGame() {
-        Arrays.fill(grid,   0);
-        Arrays.fill(filled, false);
-        currentIndex         = 0;
-        gameOver             = false;
-        won                  = false;
-        successfulPlacements = 0;
+    /**
+     * Starts the game.
+     */
+    @Override
+    public void startGame()
+    {
+        Arrays.fill(getGridInternal(),   STARTING_VALUE);
+        Arrays.fill(getFilledInternal(), false);
+        setCurrentIndex(0);
+        setGameOver(false);
+        setWon(false);
+        setSuccessfulPlacements(STARTING_VALUE);
         generateNumbers();
     }
 
+    /**
+     * Determines possibility of placing number in a spot.
+     *
+     * @param cellIndex 0-based index into the 20-cell grid
+     * @return if valid placement
+     */
     @Override
-    public boolean placeNumber(final int cellIndex) {
-        // Game already finished – reject silently
-        if (gameOver || won) return false;
-
-        // Out-of-bounds guard
-        if (cellIndex < MIN_GRID_SIZE || cellIndex >= GRID_SIZE) return false;
-
-        // Cell already occupied – ignore per specification
-        if (filled[cellIndex]) return false;
-
-        int num = getCurrentNumber();
-
-        // Check whether the placement respects ascending order
-        if (!isValidPlacementFor(num, cellIndex)) {
-            return false;  // Invalid placement - just reject, don't end game
+    public boolean placeNumber(final int cellIndex)
+    {
+        if (isGameOver() || isWon())
+        {
+            return false;
         }
 
-        // Accept the placement
-        grid[cellIndex]  = num;
-        filled[cellIndex] = true;
-        successfulPlacements++;
-        currentIndex++;
+        if (cellIndex < MIN_GRID_SIZE || cellIndex >= getGridSize())
+        {
+            return false;
+        }
 
-        // All 20 numbers placed – player wins
-        if (currentIndex == GRID_SIZE) {
-            won = true;
+        if (getFilledInternal()[cellIndex])
+        {
+            return false;
+        }
+
+        final int num = getCurrentNumber();
+
+        if (!isValidPlacementFor(num, cellIndex))
+        {
+            return false;
+        }
+
+        setCell(cellIndex, num);
+        incrementSuccessfulPlacements();
+        setCurrentIndex(getCurrentIndex() + INCREMENT_INDEX);
+
+
+        if (getCurrentIndex() == getGridSize())
+        {
+            setWon(true);
             return true;
         }
 
-        // Check whether the next number can be placed anywhere
-        if (!hasAnyValidPlacement(numbers[currentIndex])) {
-            gameOver = true;          // no legal cell for next number → loss
+        if (!hasAnyValidPlacement(getNumbersInternal()[getCurrentIndex()]))
+        {
+            setGameOver(true);
         }
 
         return true;

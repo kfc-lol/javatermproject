@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifies initial state, tick incrementing, finish marking,
  * result summary generation for all outcomes, and reset behaviour.
  *
- * @author Your Name
+ * @author Kian Castro
  * @version 1.0
  */
 public class MazeScoreTest

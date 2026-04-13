@@ -12,7 +12,7 @@ import java.util.Scanner;
  * The main WordGame class that runs the geography trivia game.
  * Manages game flow, question delivery, scoring, and score persistence.
  *
- * @author COMP2522 Student
+ * @author Kian Castro
  * @version 1.0
  */
 public final class WordGame
@@ -24,6 +24,10 @@ public final class WordGame
     private static final int QUESTION_TYPE_COUNT = 3;
     private static final String SCORE_FILE = "score.txt";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final int CORRECT_FIRST_ATTEMPT = 0;
+    private static final int CORRECT_SECOND_ATTEMPT = 0;
+    private static final int INCORRECT_TWO_ATTEMPTS = 0;
+    public static final int SINGULAR = 1;
 
     private final World world;
     private final Scanner scanner;
@@ -90,9 +94,9 @@ public final class WordGame
     private void playGame()
     {
 
-        int correctFirstAttempt = 0;
-        int correctSecondAttempt = 0;
-        int incorrectTwoAttempts = 0;
+        int correctFirstAttempt = CORRECT_FIRST_ATTEMPT;
+        int correctSecondAttempt = CORRECT_SECOND_ATTEMPT;
+        int incorrectTwoAttempts = INCORRECT_TWO_ATTEMPTS;
 
         final String[] allCountries = world.getAllCountryNames();
         final Random random = new Random();
@@ -296,18 +300,38 @@ public final class WordGame
                                   final int incorrectParam)
     {
         System.out.println("\n--- Game Summary ---");
-        final String gameWord = gamesPlayedParam == 1 ? "game" : "games";
+
+        final String gameWord;
+        if (gamesPlayedParam == SINGULAR) {
+            gameWord = "game";
+        } else {
+            gameWord = "games";
+        }
         System.out.println("- " + gamesPlayedParam + " word " + gameWord + " played");
 
-        final String firstWord = correctFirstParam == 1 ? "answer" : "answers";
+        final String firstWord;
+        if (correctFirstParam == SINGULAR) {
+            firstWord = "answer";
+        } else {
+            firstWord = "answers";
+        }
         System.out.println("- " + correctFirstParam + " correct " + firstWord + " on the first attempt");
 
-        final String secondWord = correctSecondParam == 1 ? "answer" : "answers";
+        final String secondWord;
+        if (correctSecondParam == SINGULAR) {
+            secondWord = "answer";
+        } else {
+            secondWord = "answers";
+        }
         System.out.println("- " + correctSecondParam + " correct " + secondWord + " on the second attempt");
 
-        final String incorrectWord = incorrectParam == 1 ? "answer" : "answers";
-        System.out.println("- " + incorrectParam + " incorrect " + incorrectWord + " on two attempts each");
-        System.out.println();
+        final String incorrectWord;
+        if (incorrectParam == SINGULAR) {
+            incorrectWord = "answer";
+        } else {
+            incorrectWord = "answers";
+        }
+        System.out.println("- " + incorrectParam + " incorrect " + incorrectWord + " on two attempts each\n");
     }
 
     /**

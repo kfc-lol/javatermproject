@@ -29,7 +29,7 @@ public final class MazeFileException extends Exception
      * @param message a description of the file operation that failed
      * @param cause   the underlying exception that triggered this one
      */
-    public MazeFileException(final String    message,
+    public MazeFileException(final String message,
                              final Throwable cause)
     {
         super(message, cause);

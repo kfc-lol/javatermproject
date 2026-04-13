@@ -14,11 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for the MazeFileManager class.
  * Verifies save and load round-trips, missing file handling,
  * invalid file content handling, and file existence checking.
- * <p>
  * Each test cleans up maze_seed.txt in @AfterEach to avoid
  * polluting the working directory between runs.
  *
- * @author Your Name
+ * @author Kian Castro
  * @version 1.0
  */
 public class MazeFileManagerTest
