@@ -1,0 +1,209 @@
+/* =============================================================
+   Number Game — stylesheet
+   All colours, fonts, sizes, spacing, and radii live here.
+   ============================================================= */
+
+/* ---- Root / scene background -------------------------------- */
+.root {
+    -fx-background-color: #000000;
+    -fx-font-family: "Courier New";
+}
+
+/* ---- Header bar --------------------------------------------- */
+.header {
+    -fx-padding: 16 24 12 24;
+    -fx-border-color: transparent transparent #333333 transparent;
+    -fx-border-width: 1;
+}
+
+.header-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.header-round {
+    -fx-font-size: 13px;
+    -fx-text-fill: #cccccc;
+}
+
+/* ---- Menu scene --------------------------------------------- */
+.menu-root {
+    -fx-spacing: 30;
+    -fx-alignment: center;
+    -fx-padding: 60;
+    -fx-background-color: #000000;
+}
+
+.menu-title {
+    -fx-font-size: 52px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.menu-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #cccccc;
+}
+
+/* ---- Info / score cards ------------------------------------- */
+.card {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #333333;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 18 24 18 24;
+    -fx-max-width: 560;
+    -fx-spacing: 8;
+}
+
+.card-heading {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.card-body {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ffffff;
+    -fx-wrap-text: true;
+    -fx-max-width: 520;
+}
+
+.card-highlight {
+    -fx-border-color: #ffffff;
+}
+
+/* ---- Current-number panel ----------------------------------- */
+.cue-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #cccccc;
+}
+
+.current-number {
+    -fx-font-size: 64px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.current-panel {
+    -fx-alignment: center;
+    -fx-padding: 18 0 14 0;
+    -fx-spacing: 4;
+}
+
+/* ---- Grid cells --------------------------------------------- */
+.cell-empty {
+    -fx-background-color: #1c2128;
+    -fx-border-color: #333333;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.cell-filled {
+    -fx-background-color: #1b2d4f;
+    -fx-border-color: #ffffff;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.cell-invalid {
+    -fx-background-color: #3d1b1b;
+    -fx-border-color: #ffffff;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #cccccc;
+}
+
+.cell-position-label {
+    -fx-font-size: 9px;
+    -fx-text-fill: #444c56;
+}
+
+/* ---- Status bar --------------------------------------------- */
+.status-bar {
+    -fx-alignment: center;
+    -fx-padding: 10 24 20 24;
+    -fx-spacing: 4;
+}
+
+.progress-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #cccccc;
+}
+
+.hint-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.hint-label-warning {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #cccccc;
+}
+
+/* ---- Buttons ------------------------------------------------ */
+.btn-primary {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000000;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-pref-width: 220;
+    -fx-pref-height: 48;
+}
+
+.btn-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: #ffffff;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-pref-width: 180;
+    -fx-pref-height: 44;
+}
+
+/* ---- End-of-round panel (slides up from bottom) ------------- */
+.end-panel {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #333333 transparent transparent transparent;
+    -fx-border-width: 2;
+    -fx-alignment: center-left;
+    -fx-padding: 20 28 20 28;
+    -fx-spacing: 8;
+}
+
+.end-headline {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.end-reason {
+    -fx-font-size: 13px;
+    -fx-text-fill: #cccccc;
+    -fx-wrap-text: true;
+    -fx-max-width: 560;
+}
+
+.end-stats {
+    -fx-font-size: 12px;
+    -fx-text-fill: #cccccc;
+    -fx-wrap-text: true;
+    -fx-max-width: 560;
+}
